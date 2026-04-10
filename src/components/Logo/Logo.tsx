@@ -8,22 +8,22 @@ interface Props {
 }
 
 export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
+  const { className } = props
 
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-logo-light.svg"
-    />
+    <div className={clsx('flex flex-col leading-none select-none', className)}>
+      <span
+        className="text-2xl font-bold tracking-tight"
+        style={{ color: 'var(--brand-red, #C41E3A)', fontFamily: 'var(--font-geist-sans)' }}
+      >
+        松壽司
+      </span>
+      <span
+        className="text-xs tracking-[0.2em] uppercase font-medium"
+        style={{ color: 'var(--brand-dark, #1A1A1A)' }}
+      >
+        Matsu-Sushi
+      </span>
+    </div>
   )
 }

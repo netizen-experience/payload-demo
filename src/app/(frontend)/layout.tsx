@@ -33,7 +33,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               preview: isEnabled,
             }}
           />
-
           <Header />
           {children}
           <Footer />
@@ -45,9 +44,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
-  twitter: {
-    card: 'summary_large_image',
-    creator: '@payloadcms',
+  title: {
+    default: 'Matsu-Sushi 松壽司 | Authentic Japanese Sushi in Hong Kong',
+    template: '%s | Matsu-Sushi 松壽司',
   },
+  description: 'Authentic Japanese sushi restaurant in Central, Hong Kong. Premium nigiri, maki rolls, sashimi and more.',
+  openGraph: mergeOpenGraph(),
 }

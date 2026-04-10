@@ -71,6 +71,7 @@ export interface Config {
     posts: Post;
     media: Media;
     categories: Category;
+    'menu-items': MenuItem;
     users: User;
     redirects: Redirect;
     forms: Form;
@@ -93,6 +94,7 @@ export interface Config {
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'menu-items': MenuItemsSelect<false> | MenuItemsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -108,7 +110,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'zh') | ('en' | 'zh')[];
   globals: {
     header: Header;
     footer: Footer;
@@ -117,7 +119,7 @@ export interface Config {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'zh';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -201,7 +203,7 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | FeaturedDishesBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -783,6 +785,87 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedDishesBlock".
+ */
+export interface FeaturedDishesBlock {
+  /**
+   * Section heading (localized)
+   */
+  heading?: string | null;
+  subheading?: string | null;
+  /**
+   * Select up to 6 featured menu items to display
+   */
+  items?: (number | MenuItem)[] | null;
+  /**
+   * If checked, automatically shows all featured items instead of manual selection
+   */
+  showAll?: boolean | null;
+  /**
+   * Link for "View All" button
+   */
+  viewAllLink?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'featuredDishes';
+}
+/**
+ * Individual sushi and food items on the menu
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-items".
+ */
+export interface MenuItem {
+  id: number;
+  /**
+   * Item name (localized)
+   */
+  title: string;
+  /**
+   * Short description of the item (localized)
+   */
+  description?: string | null;
+  /**
+   * Price in HKD
+   */
+  price: number;
+  /**
+   * Main dish photo
+   */
+  image?: (number | null) | Media;
+  category: number | Category;
+  /**
+   * Show on homepage featured section
+   */
+  featured?: boolean | null;
+  /**
+   * Currently available to order
+   */
+  available?: boolean | null;
+  /**
+   * Allergen information
+   */
+  allergens?: ('gluten' | 'shellfish' | 'fish' | 'soy' | 'sesame' | 'egg' | 'dairy' | 'nuts')[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -988,6 +1071,10 @@ export interface PayloadLockedDocument {
         value: number | Category;
       } | null)
     | ({
+        relationTo: 'menu-items';
+        value: number | MenuItem;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1089,6 +1176,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        featuredDishes?: T | FeaturedDishesBlockSelect<T>;
       };
   meta?:
     | T
@@ -1185,6 +1273,19 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedDishesBlock_select".
+ */
+export interface FeaturedDishesBlockSelect<T extends boolean = true> {
+  heading?: T;
+  subheading?: T;
+  items?: T;
+  showAll?: T;
+  viewAllLink?: T;
   id?: T;
   blockName?: T;
 }
@@ -1332,6 +1433,33 @@ export interface CategoriesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-items_select".
+ */
+export interface MenuItemsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  price?: T;
+  image?: T;
+  category?: T;
+  featured?: T;
+  available?: T;
+  allergens?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1666,6 +1794,10 @@ export interface Header {
  */
 export interface Footer {
   id: number;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  hours?: string | null;
   navItems?:
     | {
         link: {
@@ -1717,6 +1849,10 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  address?: T;
+  phone?: T;
+  email?: T;
+  hours?: T;
   navItems?:
     | T
     | {
@@ -1761,6 +1897,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'posts';
           value: number | Post;
+        } | null)
+      | ({
+          relationTo: 'menu-items';
+          value: number | MenuItem;
         } | null);
     global?: string | null;
     user?: (number | null) | User;

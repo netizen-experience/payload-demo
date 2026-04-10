@@ -10,6 +10,28 @@ export const Footer: GlobalConfig = {
   },
   fields: [
     {
+      name: 'address',
+      type: 'text',
+      localized: true,
+      defaultValue: 'G/F, 88 Stanley Street, Central, Hong Kong',
+    },
+    {
+      name: 'phone',
+      type: 'text',
+      defaultValue: '+852 2345 6789',
+    },
+    {
+      name: 'email',
+      type: 'email',
+      defaultValue: 'info@matsu-sushi.hk',
+    },
+    {
+      name: 'hours',
+      type: 'text',
+      localized: true,
+      defaultValue: 'Mon–Sun: 12:00 – 22:30',
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [
@@ -17,7 +39,7 @@ export const Footer: GlobalConfig = {
           appearances: false,
         }),
       ],
-      maxRows: 6,
+      maxRows: 8,
       admin: {
         initCollapsed: true,
         components: {
