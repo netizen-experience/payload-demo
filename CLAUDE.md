@@ -1,0 +1,84 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+pnpm dev          # Start development server (Next.js + Payload admin at localhost:3000)
+pnpm build        # Production build (runs next-sitemap post-build)
+pnpm start        # Start production server
+pnpm lint         # ESLint check
+pnpm lint:fix     # Auto-fix lint issues
+
+# Payload code generation (run after schema changes)
+pnpm generate:types       # Regenerate src/payload-types.ts
+pnpm generate:importmap   # Regenerate app/(payload)/admin/importMap.js
+
+# Type checking
+npx tsc --noEmit
+
+# Testing
+pnpm test         # Run both integration and E2E tests
+pnpm test:int     # Vitest integration tests (tests/int/**/*.int.spec.ts)
+pnpm test:e2e     # Playwright E2E tests (tests/e2e/)
+```
+
+## Architecture
+
+This is a **unified full-stack app**: Payload CMS (backend/admin) + Next.js App Router (frontend) running as a single process.
+
+**Key integration point**: `next.config.ts` wraps Next.js with `withPayload()`. Payload is initialized via `getPayload({ config })` imported from `@payload-config` (alias for `src/payload.config.ts`).
+
+### Route Groups
+
+- `src/app/(frontend)/` — Public website routes (pages, posts, search, sitemaps)
+- `src/app/(payload)/` — Payload admin panel and API routes
+
+### Payload Configuration (`src/payload.config.ts`)
+
+- **Database**: SQLite via `DATABASE_URL` env var
+- **Collections**: Pages, Posts, Media, Categories, Users
+- **Globals**: Header, Footer
+- **Plugins**: Redirects, Nested Docs, SEO, Form Builder, Search
+- **Jobs Queue**: Scheduled publishing (requires `CRON_SECRET`)
+- **TypeScript output**: `src/payload-types.ts` (auto-generated — do not edit manually)
+
+### Content Architecture
+
+Pages and Posts use a **layout builder** pattern: content is stored as an array of blocks (Hero, Content, Media, CallToAction, Archive) rather than a single rich text field. Both support drafts/versioning with scheduled publishing.
+
+### Path Aliases
+
+- `@/*` → `src/*`
+- `@payload-config` → `src/payload.config.ts`
+
+## Critical Payload Patterns
+
+See `AGENTS.md` for comprehensive Payload CMS patterns. The most critical:
+
+**Local API access control** — always set `overrideAccess: false` when passing `user`:
+```typescript
+// ❌ Access control bypassed (runs as admin)
+await payload.find({ collection: 'posts', user: someUser })
+
+// ✅ Enforces user permissions
+await payload.find({ collection: 'posts', user: someUser, overrideAccess: false })
+```
+
+**Transaction safety in hooks** — always pass `req` to nested operations:
+```typescript
+// ✅ Same transaction
+await req.payload.create({ collection: 'audit-log', data: {...}, req })
+```
+
+**After schema changes**: run `pnpm generate:types` then `pnpm generate:importmap`.
+
+## Environment Variables
+
+See `.env.example`:
+- `DATABASE_URL` — SQLite file path
+- `PAYLOAD_SECRET` — JWT encryption key
+- `NEXT_PUBLIC_SERVER_URL` — e.g. `http://localhost:3000`
+- `CRON_SECRET` — for scheduled publishing
+- `PREVIEW_SECRET` — for draft preview URLs
