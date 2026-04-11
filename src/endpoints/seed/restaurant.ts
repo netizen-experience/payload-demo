@@ -19,10 +19,15 @@ export const seedRestaurant = async ({
 }): Promise<void> => {
   payload.logger.info('Seeding Matsu-Sushi restaurant data...')
 
-  // Clear existing data
+  // Clear existing data (docs + versions for versioned collections)
   const collections = ['menu-items', 'categories', 'pages', 'media'] as const
   for (const col of collections) {
     await payload.db.deleteMany({ collection: col as any, req, where: {} })
+  }
+  // Delete versions separately — deleteMany only clears the main table
+  const versionedCollections = ['menu-items', 'pages'] as const
+  for (const col of versionedCollections) {
+    await payload.db.deleteVersions({ collection: col as any, req, where: {} })
   }
 
   await payload.updateGlobal({

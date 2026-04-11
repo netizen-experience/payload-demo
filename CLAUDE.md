@@ -38,6 +38,7 @@ This is a Japanese sushi restaurant website with dual-language support (English 
 
 **Seed the database** (run once, clears and repopulates all data):
 ```bash
+PAYLOAD_SECRET=80f904adaf380a2865a893f4 DATABASE_URL=file:./payload-demo.db \
 node --import tsx/esm -e "
 import { getPayload, createLocalReq } from 'payload'
 const { default: config } = await import('./src/payload.config.ts')
