@@ -19,27 +19,31 @@ const allergenLabels: Record<string, { en: string; zh: string }> = {
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const items = await payload.find({
-    collection: 'menu-items',
-    limit: 1000,
-    draft: false,
-    overrideAccess: false,
-    select: { slug: true },
-  })
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const items = await payload.find({
+      collection: 'menu-items',
+      limit: 1000,
+      draft: false,
+      overrideAccess: false,
+      select: { slug: true },
+    })
 
-  const locales = ['en', 'zh']
-  const params: { locale: string; slug: string }[] = []
+    const locales = ['en', 'zh']
+    const params: { locale: string; slug: string }[] = []
 
-  for (const locale of locales) {
-    for (const doc of items.docs) {
-      if (doc.slug) {
-        params.push({ locale, slug: doc.slug })
+    for (const locale of locales) {
+      for (const doc of items.docs) {
+        if (doc.slug) {
+          params.push({ locale, slug: doc.slug })
+        }
       }
     }
-  }
 
-  return params
+    return params
+  } catch {
+    return []
+  }
 }
 
 type Args = {

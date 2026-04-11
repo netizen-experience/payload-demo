@@ -54,14 +54,12 @@ export const hero: Field = {
       }),
       label: false,
     },
-    {
-      ...linkGroup({
-        overrides: {
-          maxRows: 2,
-        },
-      }),
-      localized: true,
-    },
+    linkGroup({
+      overrides: {
+        maxRows: 2,
+        localized: true,
+      },
+    }),
     {
       name: 'media',
       type: 'upload',

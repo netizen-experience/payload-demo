@@ -23,6 +23,11 @@ COPY . .
 
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG PAYLOAD_SECRET
+ARG DATABASE_URL=file:./payload-demo.db
+ENV PAYLOAD_SECRET=$PAYLOAD_SECRET
+ENV DATABASE_URL=$DATABASE_URL
+
 RUN pnpm run build
 
 # Production image, copy all the files and run next

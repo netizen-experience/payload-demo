@@ -11,28 +11,32 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const pages = await payload.find({
-    collection: 'pages',
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: { slug: true },
-  })
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const pages = await payload.find({
+      collection: 'pages',
+      draft: false,
+      limit: 1000,
+      overrideAccess: false,
+      pagination: false,
+      select: { slug: true },
+    })
 
-  const locales = ['en', 'zh']
-  const params: { locale: string; slug: string }[] = []
+    const locales = ['en', 'zh']
+    const params: { locale: string; slug: string }[] = []
 
-  for (const locale of locales) {
-    for (const doc of pages.docs) {
-      if (doc.slug && doc.slug !== 'home') {
-        params.push({ locale, slug: doc.slug })
+    for (const locale of locales) {
+      for (const doc of pages.docs) {
+        if (doc.slug && doc.slug !== 'home') {
+          params.push({ locale, slug: doc.slug })
+        }
       }
     }
-  }
 
-  return params
+    return params
+  } catch {
+    return []
+  }
 }
 
 type Args = {
