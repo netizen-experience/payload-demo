@@ -86,7 +86,10 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
           {t.subtitle}
         </p>
         <h1 className="text-4xl md:text-5xl font-light tracking-wide">{t.title}</h1>
-        <div className="mt-5 mx-auto w-16 h-0.5" style={{ backgroundColor: 'var(--brand-red, #C41E3A)' }} />
+        <div
+          className="mt-5 mx-auto w-16 h-0.5"
+          style={{ backgroundColor: 'var(--brand-red, #C41E3A)' }}
+        />
       </div>
 
       <div className="container py-12">
@@ -96,12 +99,21 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
           if (!items.length) return null
 
           return (
-            <section key={category.id} className="mb-16">
+            <section
+              key={category.id}
+              id={category.slug}
+              className="mb-16 scroll-mt-20 md:scroll-mt-28"
+            >
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-1 h-8 rounded" style={{ backgroundColor: 'var(--brand-red, #C41E3A)' }} />
+                <div
+                  className="w-1 h-8 rounded"
+                  style={{ backgroundColor: 'var(--brand-red, #C41E3A)' }}
+                />
                 <h2 className="text-2xl font-light tracking-wide">{category.title}</h2>
                 {category.description && (
-                  <p className="text-sm text-muted-foreground hidden md:block">{category.description}</p>
+                  <p className="text-sm text-muted-foreground hidden md:block">
+                    {category.description}
+                  </p>
                 )}
               </div>
 
@@ -112,7 +124,7 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
                     href={`/${locale}/menu/${item.slug}`}
                     className="group block bg-white border border-border rounded overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                   >
-                    <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                    <div className="relative aspect-4/3 bg-gray-100 overflow-hidden">
                       {item.image && typeof item.image === 'object' ? (
                         <Media
                           fill

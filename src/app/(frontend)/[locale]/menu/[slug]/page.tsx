@@ -92,7 +92,7 @@ export default async function MenuItemPage({ params: paramsPromise }: Args) {
           <div className="py-4">
             {category && (
               <Link
-                href={`/${locale}/menu`}
+                href={`/${locale}/menu${category?.slug ? `#${category.slug}` : ''}`}
                 className="inline-flex items-center gap-1 text-xs tracking-widest uppercase font-medium mb-3 hover:opacity-80 transition-opacity"
                 style={{ color: 'var(--brand-gold, #C9A84C)' }}
               >
