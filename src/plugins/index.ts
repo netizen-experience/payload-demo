@@ -1,5 +1,4 @@
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
@@ -46,10 +45,8 @@ export const plugins: Plugin[] = [
       },
     },
   }),
-  nestedDocsPlugin({
-    collections: ['categories'],
-    generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
-  }),
+  // nestedDocsPlugin removed — restaurant categories are flat (Nigiri, Maki, etc.),
+  // nesting was only relevant for the original blog template's category hierarchy.
   seoPlugin({
     generateTitle,
     generateURL,
