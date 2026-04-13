@@ -6,4 +6,5 @@ services:
     env_file: .env.production
     volumes:
       - ./data:/app/data
+      - ./public/media:/app/public/media
     restart: unless-stopped
