@@ -7,10 +7,11 @@ const defaultLocale = 'en'
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Skip Payload admin, API, static files
+  // Skip Payload admin, API, Next.js app routes, static files
   if (
     pathname.startsWith('/admin') ||
     pathname.startsWith('/api') ||
+    pathname.startsWith('/next') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/favicon') ||
     pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2)$/)

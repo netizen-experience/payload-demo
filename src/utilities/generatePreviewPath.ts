@@ -25,10 +25,14 @@ export const generatePreviewPath = ({ collection, slug, req }: Props) => {
   // Encode to support slugs with special characters
   const encodedSlug = encodeURIComponent(slug)
 
+  // The home page lives at /${locale} not /${locale}/home
+  const path =
+    collection === 'pages' && slug === 'home' ? prefix : `${prefix}/${encodedSlug}`
+
   const encodedParams = new URLSearchParams({
     slug: encodedSlug,
     collection,
-    path: `${prefix}/${encodedSlug}`,
+    path,
     previewSecret: process.env.PREVIEW_SECRET || '',
   })
 
