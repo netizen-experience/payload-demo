@@ -23,7 +23,7 @@ node_modules/
 /playwright/.cache/
 
 # Database SQLite
-payload-demo.db
+/data
 
 # TypeScript incremental build cache
 *.tsbuildinfo
