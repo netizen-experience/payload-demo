@@ -54,9 +54,3 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 3. **Infra**: Stand up OpenNext + SST (or chosen IaC) targeting a staging AWS environment.
 4. **Cron**: Point EventBridge Scheduler at the jobs endpoint; retire the old cron trigger.
 5. **Cutover**: Switch DNS, monitor, decommission the old VM/Docker host.
-
-## Known issues / follow-ups
-
-Surfaced during Phase 1 verification — none block the DB swap itself, but worth tracking:
-
-- **Playwright browsers weren't pre-installed** — `npm run test:e2e` failed with a missing Chromium binary until `npx playwright install chromium` was run manually. Consider adding this to onboarding docs or a `postinstall` step so fresh clones/CI don't hit the same gap.
