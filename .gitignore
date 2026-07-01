@@ -22,12 +22,5 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 
-# Database SQLite
-/data
-*.db
-*.db-journal
-*.db-wal
-*.db-shm
-
 # TypeScript incremental build cache
 *.tsbuildinfo

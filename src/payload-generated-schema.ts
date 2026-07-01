@@ -6,34 +6,196 @@
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
 
-import type {} from '@payloadcms/db-sqlite'
+import type {} from '@payloadcms/db-postgres'
 import {
-  sqliteTable,
+  pgTable,
   index,
   uniqueIndex,
   foreignKey,
   integer,
+  varchar,
+  boolean,
   text,
+  jsonb,
   numeric,
-  type AnySQLiteColumn,
-} from '@payloadcms/db-sqlite/drizzle/sqlite-core'
-import { sql, relations } from '@payloadcms/db-sqlite/drizzle'
+  serial,
+  timestamp,
+  type AnyPgColumn,
+  pgEnum,
+} from '@payloadcms/db-postgres/drizzle/pg-core'
+import { sql, relations } from '@payloadcms/db-postgres/drizzle'
+export const enum__locales = pgEnum('enum__locales', ['en', 'zh'])
+export const enum_pages_hero_links_link_type = pgEnum('enum_pages_hero_links_link_type', [
+  'reference',
+  'custom',
+])
+export const enum_pages_hero_links_link_appearance = pgEnum(
+  'enum_pages_hero_links_link_appearance',
+  ['default', 'outline'],
+)
+export const enum_pages_blocks_cta_links_link_type = pgEnum(
+  'enum_pages_blocks_cta_links_link_type',
+  ['reference', 'custom'],
+)
+export const enum_pages_blocks_cta_links_link_appearance = pgEnum(
+  'enum_pages_blocks_cta_links_link_appearance',
+  ['default', 'outline'],
+)
+export const enum_pages_blocks_content_columns_size = pgEnum(
+  'enum_pages_blocks_content_columns_size',
+  ['oneThird', 'half', 'twoThirds', 'full'],
+)
+export const enum_pages_blocks_content_columns_link_type = pgEnum(
+  'enum_pages_blocks_content_columns_link_type',
+  ['reference', 'custom'],
+)
+export const enum_pages_blocks_content_columns_link_appearance = pgEnum(
+  'enum_pages_blocks_content_columns_link_appearance',
+  ['default', 'outline'],
+)
+export const enum_pages_blocks_archive_populate_by = pgEnum(
+  'enum_pages_blocks_archive_populate_by',
+  ['collection', 'selection'],
+)
+export const enum_pages_blocks_archive_relation_to = pgEnum(
+  'enum_pages_blocks_archive_relation_to',
+  ['posts'],
+)
+export const enum_pages_hero_type = pgEnum('enum_pages_hero_type', [
+  'none',
+  'highImpact',
+  'mediumImpact',
+  'lowImpact',
+])
+export const enum_pages_status = pgEnum('enum_pages_status', ['draft', 'published'])
+export const enum__pages_v_version_hero_links_link_type = pgEnum(
+  'enum__pages_v_version_hero_links_link_type',
+  ['reference', 'custom'],
+)
+export const enum__pages_v_version_hero_links_link_appearance = pgEnum(
+  'enum__pages_v_version_hero_links_link_appearance',
+  ['default', 'outline'],
+)
+export const enum__pages_v_blocks_cta_links_link_type = pgEnum(
+  'enum__pages_v_blocks_cta_links_link_type',
+  ['reference', 'custom'],
+)
+export const enum__pages_v_blocks_cta_links_link_appearance = pgEnum(
+  'enum__pages_v_blocks_cta_links_link_appearance',
+  ['default', 'outline'],
+)
+export const enum__pages_v_blocks_content_columns_size = pgEnum(
+  'enum__pages_v_blocks_content_columns_size',
+  ['oneThird', 'half', 'twoThirds', 'full'],
+)
+export const enum__pages_v_blocks_content_columns_link_type = pgEnum(
+  'enum__pages_v_blocks_content_columns_link_type',
+  ['reference', 'custom'],
+)
+export const enum__pages_v_blocks_content_columns_link_appearance = pgEnum(
+  'enum__pages_v_blocks_content_columns_link_appearance',
+  ['default', 'outline'],
+)
+export const enum__pages_v_blocks_archive_populate_by = pgEnum(
+  'enum__pages_v_blocks_archive_populate_by',
+  ['collection', 'selection'],
+)
+export const enum__pages_v_blocks_archive_relation_to = pgEnum(
+  'enum__pages_v_blocks_archive_relation_to',
+  ['posts'],
+)
+export const enum__pages_v_version_hero_type = pgEnum('enum__pages_v_version_hero_type', [
+  'none',
+  'highImpact',
+  'mediumImpact',
+  'lowImpact',
+])
+export const enum__pages_v_version_status = pgEnum('enum__pages_v_version_status', [
+  'draft',
+  'published',
+])
+export const enum__pages_v_published_locale = pgEnum('enum__pages_v_published_locale', ['en', 'zh'])
+export const enum_posts_status = pgEnum('enum_posts_status', ['draft', 'published'])
+export const enum__posts_v_version_status = pgEnum('enum__posts_v_version_status', [
+  'draft',
+  'published',
+])
+export const enum__posts_v_published_locale = pgEnum('enum__posts_v_published_locale', ['en', 'zh'])
+export const enum_menu_items_allergens = pgEnum('enum_menu_items_allergens', [
+  'gluten',
+  'shellfish',
+  'fish',
+  'soy',
+  'sesame',
+  'egg',
+  'dairy',
+  'nuts',
+])
+export const enum_menu_items_status = pgEnum('enum_menu_items_status', ['draft', 'published'])
+export const enum__menu_items_v_version_allergens = pgEnum('enum__menu_items_v_version_allergens', [
+  'gluten',
+  'shellfish',
+  'fish',
+  'soy',
+  'sesame',
+  'egg',
+  'dairy',
+  'nuts',
+])
+export const enum__menu_items_v_version_status = pgEnum('enum__menu_items_v_version_status', [
+  'draft',
+  'published',
+])
+export const enum__menu_items_v_published_locale = pgEnum('enum__menu_items_v_published_locale', [
+  'en',
+  'zh',
+])
+export const enum_redirects_to_type = pgEnum('enum_redirects_to_type', ['reference', 'custom'])
+export const enum_forms_confirmation_type = pgEnum('enum_forms_confirmation_type', [
+  'message',
+  'redirect',
+])
+export const enum_payload_jobs_log_task_slug = pgEnum('enum_payload_jobs_log_task_slug', [
+  'inline',
+  'schedulePublish',
+])
+export const enum_payload_jobs_log_state = pgEnum('enum_payload_jobs_log_state', [
+  'failed',
+  'succeeded',
+])
+export const enum_payload_jobs_task_slug = pgEnum('enum_payload_jobs_task_slug', [
+  'inline',
+  'schedulePublish',
+])
+export const enum_payload_folders_folder_type = pgEnum('enum_payload_folders_folder_type', [
+  'media',
+])
+export const enum_header_nav_items_link_type = pgEnum('enum_header_nav_items_link_type', [
+  'reference',
+  'custom',
+])
+export const enum_footer_nav_items_link_type = pgEnum('enum_footer_nav_items_link_type', [
+  'reference',
+  'custom',
+])
 
-export const pages_hero_links = sqliteTable(
+export const pages_hero_links = pgTable(
   'pages_hero_links',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label'),
-    link_appearance: text('link_appearance', { enum: ['default', 'outline'] }).default('default'),
+    _locale: enum__locales('_locale').notNull(),
+    id: varchar('id').primaryKey(),
+    link_type: enum_pages_hero_links_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label'),
+    link_appearance: enum_pages_hero_links_link_appearance('link_appearance').default('default'),
   },
   (columns) => [
     index('pages_hero_links_order_idx').on(columns._order),
     index('pages_hero_links_parent_id_idx').on(columns._parentID),
+    index('pages_hero_links_locale_idx').on(columns._locale),
     foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [pages.id],
@@ -42,17 +204,18 @@ export const pages_hero_links = sqliteTable(
   ],
 )
 
-export const pages_blocks_cta_links = sqliteTable(
+export const pages_blocks_cta_links = pgTable(
   'pages_blocks_cta_links',
   {
     _order: integer('_order').notNull(),
-    _parentID: text('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label'),
-    link_appearance: text('link_appearance', { enum: ['default', 'outline'] }).default('default'),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    link_type: enum_pages_blocks_cta_links_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label'),
+    link_appearance:
+      enum_pages_blocks_cta_links_link_appearance('link_appearance').default('default'),
   },
   (columns) => [
     index('pages_blocks_cta_links_order_idx').on(columns._order),
@@ -65,15 +228,15 @@ export const pages_blocks_cta_links = sqliteTable(
   ],
 )
 
-export const pages_blocks_cta = sqliteTable(
+export const pages_blocks_cta = pgTable(
   'pages_blocks_cta',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    richText: text('rich_text', { mode: 'json' }),
-    blockName: text('block_name'),
+    id: varchar('id').primaryKey(),
+    richText: jsonb('rich_text'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('pages_blocks_cta_order_idx').on(columns._order),
@@ -87,20 +250,21 @@ export const pages_blocks_cta = sqliteTable(
   ],
 )
 
-export const pages_blocks_content_columns = sqliteTable(
+export const pages_blocks_content_columns = pgTable(
   'pages_blocks_content_columns',
   {
     _order: integer('_order').notNull(),
-    _parentID: text('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    size: text('size', { enum: ['oneThird', 'half', 'twoThirds', 'full'] }).default('oneThird'),
-    richText: text('rich_text', { mode: 'json' }),
-    enableLink: integer('enable_link', { mode: 'boolean' }),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label'),
-    link_appearance: text('link_appearance', { enum: ['default', 'outline'] }).default('default'),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    size: enum_pages_blocks_content_columns_size('size').default('oneThird'),
+    richText: jsonb('rich_text'),
+    enableLink: boolean('enable_link'),
+    link_type: enum_pages_blocks_content_columns_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label'),
+    link_appearance:
+      enum_pages_blocks_content_columns_link_appearance('link_appearance').default('default'),
   },
   (columns) => [
     index('pages_blocks_content_columns_order_idx').on(columns._order),
@@ -113,14 +277,14 @@ export const pages_blocks_content_columns = sqliteTable(
   ],
 )
 
-export const pages_blocks_content = sqliteTable(
+export const pages_blocks_content = pgTable(
   'pages_blocks_content',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    blockName: text('block_name'),
+    id: varchar('id').primaryKey(),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('pages_blocks_content_order_idx').on(columns._order),
@@ -134,17 +298,17 @@ export const pages_blocks_content = sqliteTable(
   ],
 )
 
-export const pages_blocks_media_block = sqliteTable(
+export const pages_blocks_media_block = pgTable(
   'pages_blocks_media_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
+    id: varchar('id').primaryKey(),
     media: integer('media_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    blockName: text('block_name'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('pages_blocks_media_block_order_idx').on(columns._order),
@@ -159,18 +323,18 @@ export const pages_blocks_media_block = sqliteTable(
   ],
 )
 
-export const pages_blocks_archive = sqliteTable(
+export const pages_blocks_archive = pgTable(
   'pages_blocks_archive',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    introContent: text('intro_content', { mode: 'json' }),
-    populateBy: text('populate_by', { enum: ['collection', 'selection'] }).default('collection'),
-    relationTo: text('relation_to', { enum: ['posts'] }).default('posts'),
+    id: varchar('id').primaryKey(),
+    introContent: jsonb('intro_content'),
+    populateBy: enum_pages_blocks_archive_populate_by('populate_by').default('collection'),
+    relationTo: enum_pages_blocks_archive_relation_to('relation_to').default('posts'),
     limit: numeric('limit', { mode: 'number' }).default(10),
-    blockName: text('block_name'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('pages_blocks_archive_order_idx').on(columns._order),
@@ -184,19 +348,19 @@ export const pages_blocks_archive = sqliteTable(
   ],
 )
 
-export const pages_blocks_form_block = sqliteTable(
+export const pages_blocks_form_block = pgTable(
   'pages_blocks_form_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
+    id: varchar('id').primaryKey(),
     form: integer('form_id').references(() => forms.id, {
       onDelete: 'set null',
     }),
-    enableIntro: integer('enable_intro', { mode: 'boolean' }),
-    introContent: text('intro_content', { mode: 'json' }),
-    blockName: text('block_name'),
+    enableIntro: boolean('enable_intro'),
+    introContent: jsonb('intro_content'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('pages_blocks_form_block_order_idx').on(columns._order),
@@ -211,16 +375,16 @@ export const pages_blocks_form_block = sqliteTable(
   ],
 )
 
-export const pages_blocks_featured_dishes = sqliteTable(
+export const pages_blocks_featured_dishes = pgTable(
   'pages_blocks_featured_dishes',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    showAll: integer('show_all', { mode: 'boolean' }).default(false),
-    viewAllLink: text('view_all_link').default('/menu'),
-    blockName: text('block_name'),
+    id: varchar('id').primaryKey(),
+    showAll: boolean('show_all').default(false),
+    viewAllLink: varchar('view_all_link').default('/menu'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('pages_blocks_featured_dishes_order_idx').on(columns._order),
@@ -234,14 +398,14 @@ export const pages_blocks_featured_dishes = sqliteTable(
   ],
 )
 
-export const pages_blocks_featured_dishes_locales = sqliteTable(
+export const pages_blocks_featured_dishes_locales = pgTable(
   'pages_blocks_featured_dishes_locales',
   {
-    heading: text('heading').default('Featured Dishes'),
-    subheading: text('subheading').default('Crafted with the finest ingredients'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    heading: varchar('heading').default('Featured Dishes'),
+    subheading: varchar('subheading').default('Crafted with the finest ingredients'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('pages_blocks_featured_dishes_locales_locale_parent_id_unique').on(
@@ -256,27 +420,24 @@ export const pages_blocks_featured_dishes_locales = sqliteTable(
   ],
 )
 
-export const pages = sqliteTable(
+export const pages = pgTable(
   'pages',
   {
-    id: integer('id').primaryKey(),
-    hero_type: text('hero_type', {
-      enum: ['none', 'highImpact', 'mediumImpact', 'lowImpact'],
-    }).default('lowImpact'),
-    hero_richText: text('hero_rich_text', { mode: 'json' }),
+    id: serial('id').primaryKey(),
+    hero_type: enum_pages_hero_type('hero_type').default('lowImpact'),
     hero_media: integer('hero_media_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    publishedAt: text('published_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
-    slug: text('slug'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
+    publishedAt: timestamp('published_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    _status: enum_pages_status('_status').default('draft'),
   },
   (columns) => [
     index('pages_hero_hero_media_idx').on(columns.hero_media),
@@ -287,17 +448,18 @@ export const pages = sqliteTable(
   ],
 )
 
-export const pages_locales = sqliteTable(
+export const pages_locales = pgTable(
   'pages_locales',
   {
-    title: text('title'),
-    meta_title: text('meta_title'),
+    title: varchar('title'),
+    hero_richText: jsonb('hero_rich_text'),
+    meta_title: varchar('meta_title'),
     meta_image: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    meta_description: text('meta_description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    meta_description: varchar('meta_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -311,13 +473,14 @@ export const pages_locales = sqliteTable(
   ],
 )
 
-export const pages_rels = sqliteTable(
+export const pages_rels = pgTable(
   'pages_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
+    locale: enum__locales('locale'),
     pagesID: integer('pages_id'),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
@@ -327,10 +490,11 @@ export const pages_rels = sqliteTable(
     index('pages_rels_order_idx').on(columns.order),
     index('pages_rels_parent_idx').on(columns.parent),
     index('pages_rels_path_idx').on(columns.path),
-    index('pages_rels_pages_id_idx').on(columns.pagesID),
-    index('pages_rels_posts_id_idx').on(columns.postsID),
-    index('pages_rels_categories_id_idx').on(columns.categoriesID),
-    index('pages_rels_menu_items_id_idx').on(columns['menu-itemsID']),
+    index('pages_rels_locale_idx').on(columns.locale),
+    index('pages_rels_pages_id_idx').on(columns.pagesID, columns.locale),
+    index('pages_rels_posts_id_idx').on(columns.postsID, columns.locale),
+    index('pages_rels_categories_id_idx').on(columns.categoriesID, columns.locale),
+    index('pages_rels_menu_items_id_idx').on(columns['menu-itemsID'], columns.locale),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [pages.id],
@@ -359,22 +523,25 @@ export const pages_rels = sqliteTable(
   ],
 )
 
-export const _pages_v_version_hero_links = sqliteTable(
+export const _pages_v_version_hero_links = pgTable(
   '_pages_v_version_hero_links',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: integer('id').primaryKey(),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label'),
-    link_appearance: text('link_appearance', { enum: ['default', 'outline'] }).default('default'),
-    _uuid: text('_uuid'),
+    _locale: enum__locales('_locale').notNull(),
+    id: serial('id').primaryKey(),
+    link_type: enum__pages_v_version_hero_links_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label'),
+    link_appearance:
+      enum__pages_v_version_hero_links_link_appearance('link_appearance').default('default'),
+    _uuid: varchar('_uuid'),
   },
   (columns) => [
     index('_pages_v_version_hero_links_order_idx').on(columns._order),
     index('_pages_v_version_hero_links_parent_id_idx').on(columns._parentID),
+    index('_pages_v_version_hero_links_locale_idx').on(columns._locale),
     foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [_pages_v.id],
@@ -383,18 +550,19 @@ export const _pages_v_version_hero_links = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_cta_links = sqliteTable(
+export const _pages_v_blocks_cta_links = pgTable(
   '_pages_v_blocks_cta_links',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: integer('id').primaryKey(),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label'),
-    link_appearance: text('link_appearance', { enum: ['default', 'outline'] }).default('default'),
-    _uuid: text('_uuid'),
+    id: serial('id').primaryKey(),
+    link_type: enum__pages_v_blocks_cta_links_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label'),
+    link_appearance:
+      enum__pages_v_blocks_cta_links_link_appearance('link_appearance').default('default'),
+    _uuid: varchar('_uuid'),
   },
   (columns) => [
     index('_pages_v_blocks_cta_links_order_idx').on(columns._order),
@@ -407,16 +575,16 @@ export const _pages_v_blocks_cta_links = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_cta = sqliteTable(
+export const _pages_v_blocks_cta = pgTable(
   '_pages_v_blocks_cta',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: integer('id').primaryKey(),
-    richText: text('rich_text', { mode: 'json' }),
-    _uuid: text('_uuid'),
-    blockName: text('block_name'),
+    id: serial('id').primaryKey(),
+    richText: jsonb('rich_text'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('_pages_v_blocks_cta_order_idx').on(columns._order),
@@ -430,21 +598,22 @@ export const _pages_v_blocks_cta = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_content_columns = sqliteTable(
+export const _pages_v_blocks_content_columns = pgTable(
   '_pages_v_blocks_content_columns',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: integer('id').primaryKey(),
-    size: text('size', { enum: ['oneThird', 'half', 'twoThirds', 'full'] }).default('oneThird'),
-    richText: text('rich_text', { mode: 'json' }),
-    enableLink: integer('enable_link', { mode: 'boolean' }),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label'),
-    link_appearance: text('link_appearance', { enum: ['default', 'outline'] }).default('default'),
-    _uuid: text('_uuid'),
+    id: serial('id').primaryKey(),
+    size: enum__pages_v_blocks_content_columns_size('size').default('oneThird'),
+    richText: jsonb('rich_text'),
+    enableLink: boolean('enable_link'),
+    link_type: enum__pages_v_blocks_content_columns_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label'),
+    link_appearance:
+      enum__pages_v_blocks_content_columns_link_appearance('link_appearance').default('default'),
+    _uuid: varchar('_uuid'),
   },
   (columns) => [
     index('_pages_v_blocks_content_columns_order_idx').on(columns._order),
@@ -457,15 +626,15 @@ export const _pages_v_blocks_content_columns = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_content = sqliteTable(
+export const _pages_v_blocks_content = pgTable(
   '_pages_v_blocks_content',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: integer('id').primaryKey(),
-    _uuid: text('_uuid'),
-    blockName: text('block_name'),
+    id: serial('id').primaryKey(),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('_pages_v_blocks_content_order_idx').on(columns._order),
@@ -479,18 +648,18 @@ export const _pages_v_blocks_content = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_media_block = sqliteTable(
+export const _pages_v_blocks_media_block = pgTable(
   '_pages_v_blocks_media_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     media: integer('media_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    _uuid: text('_uuid'),
-    blockName: text('block_name'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('_pages_v_blocks_media_block_order_idx').on(columns._order),
@@ -505,19 +674,19 @@ export const _pages_v_blocks_media_block = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_archive = sqliteTable(
+export const _pages_v_blocks_archive = pgTable(
   '_pages_v_blocks_archive',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: integer('id').primaryKey(),
-    introContent: text('intro_content', { mode: 'json' }),
-    populateBy: text('populate_by', { enum: ['collection', 'selection'] }).default('collection'),
-    relationTo: text('relation_to', { enum: ['posts'] }).default('posts'),
+    id: serial('id').primaryKey(),
+    introContent: jsonb('intro_content'),
+    populateBy: enum__pages_v_blocks_archive_populate_by('populate_by').default('collection'),
+    relationTo: enum__pages_v_blocks_archive_relation_to('relation_to').default('posts'),
     limit: numeric('limit', { mode: 'number' }).default(10),
-    _uuid: text('_uuid'),
-    blockName: text('block_name'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('_pages_v_blocks_archive_order_idx').on(columns._order),
@@ -531,20 +700,20 @@ export const _pages_v_blocks_archive = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_form_block = sqliteTable(
+export const _pages_v_blocks_form_block = pgTable(
   '_pages_v_blocks_form_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     form: integer('form_id').references(() => forms.id, {
       onDelete: 'set null',
     }),
-    enableIntro: integer('enable_intro', { mode: 'boolean' }),
-    introContent: text('intro_content', { mode: 'json' }),
-    _uuid: text('_uuid'),
-    blockName: text('block_name'),
+    enableIntro: boolean('enable_intro'),
+    introContent: jsonb('intro_content'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('_pages_v_blocks_form_block_order_idx').on(columns._order),
@@ -559,17 +728,17 @@ export const _pages_v_blocks_form_block = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_featured_dishes = sqliteTable(
+export const _pages_v_blocks_featured_dishes = pgTable(
   '_pages_v_blocks_featured_dishes',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: integer('id').primaryKey(),
-    showAll: integer('show_all', { mode: 'boolean' }).default(false),
-    viewAllLink: text('view_all_link').default('/menu'),
-    _uuid: text('_uuid'),
-    blockName: text('block_name'),
+    id: serial('id').primaryKey(),
+    showAll: boolean('show_all').default(false),
+    viewAllLink: varchar('view_all_link').default('/menu'),
+    _uuid: varchar('_uuid'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('_pages_v_blocks_featured_dishes_order_idx').on(columns._order),
@@ -583,13 +752,13 @@ export const _pages_v_blocks_featured_dishes = sqliteTable(
   ],
 )
 
-export const _pages_v_blocks_featured_dishes_locales = sqliteTable(
+export const _pages_v_blocks_featured_dishes_locales = pgTable(
   '_pages_v_blocks_featured_dishes_locales',
   {
-    heading: text('heading').default('Featured Dishes'),
-    subheading: text('subheading').default('Crafted with the finest ingredients'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    heading: varchar('heading').default('Featured Dishes'),
+    subheading: varchar('subheading').default('Crafted with the finest ingredients'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -605,42 +774,45 @@ export const _pages_v_blocks_featured_dishes_locales = sqliteTable(
   ],
 )
 
-export const _pages_v = sqliteTable(
+export const _pages_v = pgTable(
   '_pages_v',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     parent: integer('parent_id').references(() => pages.id, {
       onDelete: 'set null',
     }),
-    version_hero_type: text('version_hero_type', {
-      enum: ['none', 'highImpact', 'mediumImpact', 'lowImpact'],
-    }).default('lowImpact'),
-    version_hero_richText: text('version_hero_rich_text', { mode: 'json' }),
+    version_hero_type: enum__pages_v_version_hero_type('version_hero_type').default('lowImpact'),
     version_hero_media: integer('version_hero_media_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    version_publishedAt: text('version_published_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version_generateSlug: integer('version_generate_slug', { mode: 'boolean' }).default(true),
-    version_slug: text('version_slug'),
-    version_updatedAt: text('version_updated_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version_createdAt: text('version_created_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version__status: text('version__status', { enum: ['draft', 'published'] }).default('draft'),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    snapshot: integer('snapshot', { mode: 'boolean' }),
-    publishedLocale: text('published_locale', { enum: ['en', 'zh'] }),
-    latest: integer('latest', { mode: 'boolean' }),
-    autosave: integer('autosave', { mode: 'boolean' }),
+    version_publishedAt: timestamp('version_published_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_generateSlug: boolean('version_generate_slug').default(true),
+    version_slug: varchar('version_slug'),
+    version_updatedAt: timestamp('version_updated_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_createdAt: timestamp('version_created_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version__status: enum__pages_v_version_status('version__status').default('draft'),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    snapshot: boolean('snapshot'),
+    publishedLocale: enum__pages_v_published_locale('published_locale'),
+    latest: boolean('latest'),
+    autosave: boolean('autosave'),
   },
   (columns) => [
     index('_pages_v_parent_idx').on(columns.parent),
@@ -658,17 +830,18 @@ export const _pages_v = sqliteTable(
   ],
 )
 
-export const _pages_v_locales = sqliteTable(
+export const _pages_v_locales = pgTable(
   '_pages_v_locales',
   {
-    version_title: text('version_title'),
-    version_meta_title: text('version_meta_title'),
+    version_title: varchar('version_title'),
+    version_hero_richText: jsonb('version_hero_rich_text'),
+    version_meta_title: varchar('version_meta_title'),
     version_meta_image: integer('version_meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    version_meta_description: text('version_meta_description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    version_meta_description: varchar('version_meta_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -685,13 +858,14 @@ export const _pages_v_locales = sqliteTable(
   ],
 )
 
-export const _pages_v_rels = sqliteTable(
+export const _pages_v_rels = pgTable(
   '_pages_v_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
+    locale: enum__locales('locale'),
     pagesID: integer('pages_id'),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
@@ -701,10 +875,11 @@ export const _pages_v_rels = sqliteTable(
     index('_pages_v_rels_order_idx').on(columns.order),
     index('_pages_v_rels_parent_idx').on(columns.parent),
     index('_pages_v_rels_path_idx').on(columns.path),
-    index('_pages_v_rels_pages_id_idx').on(columns.pagesID),
-    index('_pages_v_rels_posts_id_idx').on(columns.postsID),
-    index('_pages_v_rels_categories_id_idx').on(columns.categoriesID),
-    index('_pages_v_rels_menu_items_id_idx').on(columns['menu-itemsID']),
+    index('_pages_v_rels_locale_idx').on(columns.locale),
+    index('_pages_v_rels_pages_id_idx').on(columns.pagesID, columns.locale),
+    index('_pages_v_rels_posts_id_idx').on(columns.postsID, columns.locale),
+    index('_pages_v_rels_categories_id_idx').on(columns.categoriesID, columns.locale),
+    index('_pages_v_rels_menu_items_id_idx').on(columns['menu-itemsID'], columns.locale),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [_pages_v.id],
@@ -733,13 +908,13 @@ export const _pages_v_rels = sqliteTable(
   ],
 )
 
-export const posts_populated_authors = sqliteTable(
+export const posts_populated_authors = pgTable(
   'posts_populated_authors',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name'),
+    id: varchar('id').primaryKey(),
+    name: varchar('name'),
   },
   (columns) => [
     index('posts_populated_authors_order_idx').on(columns._order),
@@ -752,25 +927,25 @@ export const posts_populated_authors = sqliteTable(
   ],
 )
 
-export const posts = sqliteTable(
+export const posts = pgTable(
   'posts',
   {
-    id: integer('id').primaryKey(),
-    title: text('title'),
+    id: serial('id').primaryKey(),
+    title: varchar('title'),
     heroImage: integer('hero_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    content: text('content', { mode: 'json' }),
-    publishedAt: text('published_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
-    slug: text('slug'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
+    content: jsonb('content'),
+    publishedAt: timestamp('published_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    _status: enum_posts_status('_status').default('draft'),
   },
   (columns) => [
     index('posts_hero_image_idx').on(columns.heroImage),
@@ -781,16 +956,16 @@ export const posts = sqliteTable(
   ],
 )
 
-export const posts_locales = sqliteTable(
+export const posts_locales = pgTable(
   'posts_locales',
   {
-    meta_title: text('meta_title'),
+    meta_title: varchar('meta_title'),
     meta_image: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    meta_description: text('meta_description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    meta_description: varchar('meta_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -804,13 +979,13 @@ export const posts_locales = sqliteTable(
   ],
 )
 
-export const posts_rels = sqliteTable(
+export const posts_rels = pgTable(
   'posts_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
     usersID: integer('users_id'),
@@ -845,14 +1020,14 @@ export const posts_rels = sqliteTable(
   ],
 )
 
-export const _posts_v_version_populated_authors = sqliteTable(
+export const _posts_v_version_populated_authors = pgTable(
   '_posts_v_version_populated_authors',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: integer('id').primaryKey(),
-    _uuid: text('_uuid'),
-    name: text('name'),
+    id: serial('id').primaryKey(),
+    _uuid: varchar('_uuid'),
+    name: varchar('name'),
   },
   (columns) => [
     index('_posts_v_version_populated_authors_order_idx').on(columns._order),
@@ -865,40 +1040,46 @@ export const _posts_v_version_populated_authors = sqliteTable(
   ],
 )
 
-export const _posts_v = sqliteTable(
+export const _posts_v = pgTable(
   '_posts_v',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     parent: integer('parent_id').references(() => posts.id, {
       onDelete: 'set null',
     }),
-    version_title: text('version_title'),
+    version_title: varchar('version_title'),
     version_heroImage: integer('version_hero_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    version_content: text('version_content', { mode: 'json' }),
-    version_publishedAt: text('version_published_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version_generateSlug: integer('version_generate_slug', { mode: 'boolean' }).default(true),
-    version_slug: text('version_slug'),
-    version_updatedAt: text('version_updated_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version_createdAt: text('version_created_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version__status: text('version__status', { enum: ['draft', 'published'] }).default('draft'),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    snapshot: integer('snapshot', { mode: 'boolean' }),
-    publishedLocale: text('published_locale', { enum: ['en', 'zh'] }),
-    latest: integer('latest', { mode: 'boolean' }),
-    autosave: integer('autosave', { mode: 'boolean' }),
+    version_content: jsonb('version_content'),
+    version_publishedAt: timestamp('version_published_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_generateSlug: boolean('version_generate_slug').default(true),
+    version_slug: varchar('version_slug'),
+    version_updatedAt: timestamp('version_updated_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_createdAt: timestamp('version_created_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version__status: enum__posts_v_version_status('version__status').default('draft'),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    snapshot: boolean('snapshot'),
+    publishedLocale: enum__posts_v_published_locale('published_locale'),
+    latest: boolean('latest'),
+    autosave: boolean('autosave'),
   },
   (columns) => [
     index('_posts_v_parent_idx').on(columns.parent),
@@ -916,16 +1097,16 @@ export const _posts_v = sqliteTable(
   ],
 )
 
-export const _posts_v_locales = sqliteTable(
+export const _posts_v_locales = pgTable(
   '_posts_v_locales',
   {
-    version_meta_title: text('version_meta_title'),
+    version_meta_title: varchar('version_meta_title'),
     version_meta_image: integer('version_meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    version_meta_description: text('version_meta_description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    version_meta_description: varchar('version_meta_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -942,13 +1123,13 @@ export const _posts_v_locales = sqliteTable(
   ],
 )
 
-export const _posts_v_rels = sqliteTable(
+export const _posts_v_rels = pgTable(
   '_posts_v_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     postsID: integer('posts_id'),
     categoriesID: integer('categories_id'),
     usersID: integer('users_id'),
@@ -983,72 +1164,72 @@ export const _posts_v_rels = sqliteTable(
   ],
 )
 
-export const media = sqliteTable(
+export const media = pgTable(
   'media',
   {
-    id: integer('id').primaryKey(),
-    alt: text('alt'),
-    caption: text('caption', { mode: 'json' }),
+    id: serial('id').primaryKey(),
+    alt: varchar('alt'),
+    caption: jsonb('caption'),
     folder: integer('folder_id').references(() => payload_folders.id, {
       onDelete: 'set null',
     }),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    url: text('url'),
-    thumbnailURL: text('thumbnail_u_r_l'),
-    filename: text('filename'),
-    mimeType: text('mime_type'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    url: varchar('url'),
+    thumbnailURL: varchar('thumbnail_u_r_l'),
+    filename: varchar('filename'),
+    mimeType: varchar('mime_type'),
     filesize: numeric('filesize', { mode: 'number' }),
     width: numeric('width', { mode: 'number' }),
     height: numeric('height', { mode: 'number' }),
     focalX: numeric('focal_x', { mode: 'number' }),
     focalY: numeric('focal_y', { mode: 'number' }),
-    sizes_thumbnail_url: text('sizes_thumbnail_url'),
+    sizes_thumbnail_url: varchar('sizes_thumbnail_url'),
     sizes_thumbnail_width: numeric('sizes_thumbnail_width', { mode: 'number' }),
     sizes_thumbnail_height: numeric('sizes_thumbnail_height', { mode: 'number' }),
-    sizes_thumbnail_mimeType: text('sizes_thumbnail_mime_type'),
+    sizes_thumbnail_mimeType: varchar('sizes_thumbnail_mime_type'),
     sizes_thumbnail_filesize: numeric('sizes_thumbnail_filesize', { mode: 'number' }),
-    sizes_thumbnail_filename: text('sizes_thumbnail_filename'),
-    sizes_square_url: text('sizes_square_url'),
+    sizes_thumbnail_filename: varchar('sizes_thumbnail_filename'),
+    sizes_square_url: varchar('sizes_square_url'),
     sizes_square_width: numeric('sizes_square_width', { mode: 'number' }),
     sizes_square_height: numeric('sizes_square_height', { mode: 'number' }),
-    sizes_square_mimeType: text('sizes_square_mime_type'),
+    sizes_square_mimeType: varchar('sizes_square_mime_type'),
     sizes_square_filesize: numeric('sizes_square_filesize', { mode: 'number' }),
-    sizes_square_filename: text('sizes_square_filename'),
-    sizes_small_url: text('sizes_small_url'),
+    sizes_square_filename: varchar('sizes_square_filename'),
+    sizes_small_url: varchar('sizes_small_url'),
     sizes_small_width: numeric('sizes_small_width', { mode: 'number' }),
     sizes_small_height: numeric('sizes_small_height', { mode: 'number' }),
-    sizes_small_mimeType: text('sizes_small_mime_type'),
+    sizes_small_mimeType: varchar('sizes_small_mime_type'),
     sizes_small_filesize: numeric('sizes_small_filesize', { mode: 'number' }),
-    sizes_small_filename: text('sizes_small_filename'),
-    sizes_medium_url: text('sizes_medium_url'),
+    sizes_small_filename: varchar('sizes_small_filename'),
+    sizes_medium_url: varchar('sizes_medium_url'),
     sizes_medium_width: numeric('sizes_medium_width', { mode: 'number' }),
     sizes_medium_height: numeric('sizes_medium_height', { mode: 'number' }),
-    sizes_medium_mimeType: text('sizes_medium_mime_type'),
+    sizes_medium_mimeType: varchar('sizes_medium_mime_type'),
     sizes_medium_filesize: numeric('sizes_medium_filesize', { mode: 'number' }),
-    sizes_medium_filename: text('sizes_medium_filename'),
-    sizes_large_url: text('sizes_large_url'),
+    sizes_medium_filename: varchar('sizes_medium_filename'),
+    sizes_large_url: varchar('sizes_large_url'),
     sizes_large_width: numeric('sizes_large_width', { mode: 'number' }),
     sizes_large_height: numeric('sizes_large_height', { mode: 'number' }),
-    sizes_large_mimeType: text('sizes_large_mime_type'),
+    sizes_large_mimeType: varchar('sizes_large_mime_type'),
     sizes_large_filesize: numeric('sizes_large_filesize', { mode: 'number' }),
-    sizes_large_filename: text('sizes_large_filename'),
-    sizes_xlarge_url: text('sizes_xlarge_url'),
+    sizes_large_filename: varchar('sizes_large_filename'),
+    sizes_xlarge_url: varchar('sizes_xlarge_url'),
     sizes_xlarge_width: numeric('sizes_xlarge_width', { mode: 'number' }),
     sizes_xlarge_height: numeric('sizes_xlarge_height', { mode: 'number' }),
-    sizes_xlarge_mimeType: text('sizes_xlarge_mime_type'),
+    sizes_xlarge_mimeType: varchar('sizes_xlarge_mime_type'),
     sizes_xlarge_filesize: numeric('sizes_xlarge_filesize', { mode: 'number' }),
-    sizes_xlarge_filename: text('sizes_xlarge_filename'),
-    sizes_og_url: text('sizes_og_url'),
+    sizes_xlarge_filename: varchar('sizes_xlarge_filename'),
+    sizes_og_url: varchar('sizes_og_url'),
     sizes_og_width: numeric('sizes_og_width', { mode: 'number' }),
     sizes_og_height: numeric('sizes_og_height', { mode: 'number' }),
-    sizes_og_mimeType: text('sizes_og_mime_type'),
+    sizes_og_mimeType: varchar('sizes_og_mime_type'),
     sizes_og_filesize: numeric('sizes_og_filesize', { mode: 'number' }),
-    sizes_og_filename: text('sizes_og_filename'),
+    sizes_og_filename: varchar('sizes_og_filename'),
   },
   (columns) => [
     index('media_folder_idx').on(columns.folder),
@@ -1067,19 +1248,19 @@ export const media = sqliteTable(
   ],
 )
 
-export const categories = sqliteTable(
+export const categories = pgTable(
   'categories',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     displayOrder: numeric('display_order', { mode: 'number' }).default(0),
-    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
-    slug: text('slug').notNull(),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug').notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     uniqueIndex('categories_slug_idx').on(columns.slug),
@@ -1088,13 +1269,13 @@ export const categories = sqliteTable(
   ],
 )
 
-export const categories_locales = sqliteTable(
+export const categories_locales = pgTable(
   'categories_locales',
   {
-    title: text('title').notNull(),
-    description: text('description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    title: varchar('title').notNull(),
+    description: varchar('description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -1110,15 +1291,13 @@ export const categories_locales = sqliteTable(
   ],
 )
 
-export const menu_items_allergens = sqliteTable(
+export const menu_items_allergens = pgTable(
   'menu_items_allergens',
   {
     order: integer('order').notNull(),
     parent: integer('parent_id').notNull(),
-    value: text('value', {
-      enum: ['gluten', 'shellfish', 'fish', 'soy', 'sesame', 'egg', 'dairy', 'nuts'],
-    }),
-    id: integer('id').primaryKey(),
+    value: enum_menu_items_allergens('value'),
+    id: serial('id').primaryKey(),
   },
   (columns) => [
     index('menu_items_allergens_order_idx').on(columns.order),
@@ -1131,10 +1310,10 @@ export const menu_items_allergens = sqliteTable(
   ],
 )
 
-export const menu_items = sqliteTable(
+export const menu_items = pgTable(
   'menu_items',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     price: numeric('price', { mode: 'number' }),
     image: integer('image_id').references(() => media.id, {
       onDelete: 'set null',
@@ -1142,18 +1321,18 @@ export const menu_items = sqliteTable(
     category: integer('category_id').references(() => categories.id, {
       onDelete: 'set null',
     }),
-    featured: integer('featured', { mode: 'boolean' }).default(false),
-    available: integer('available', { mode: 'boolean' }).default(true),
-    publishedAt: text('published_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
-    slug: text('slug'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
+    featured: boolean('featured').default(false),
+    available: boolean('available').default(true),
+    publishedAt: timestamp('published_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    generateSlug: boolean('generate_slug').default(true),
+    slug: varchar('slug'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    _status: enum_menu_items_status('_status').default('draft'),
   },
   (columns) => [
     index('menu_items_image_idx').on(columns.image),
@@ -1165,18 +1344,18 @@ export const menu_items = sqliteTable(
   ],
 )
 
-export const menu_items_locales = sqliteTable(
+export const menu_items_locales = pgTable(
   'menu_items_locales',
   {
-    title: text('title'),
-    description: text('description'),
-    meta_title: text('meta_title'),
+    title: varchar('title'),
+    description: varchar('description'),
+    meta_title: varchar('meta_title'),
     meta_image: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    meta_description: text('meta_description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    meta_description: varchar('meta_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -1193,15 +1372,13 @@ export const menu_items_locales = sqliteTable(
   ],
 )
 
-export const _menu_items_v_version_allergens = sqliteTable(
+export const _menu_items_v_version_allergens = pgTable(
   '_menu_items_v_version_allergens',
   {
     order: integer('order').notNull(),
     parent: integer('parent_id').notNull(),
-    value: text('value', {
-      enum: ['gluten', 'shellfish', 'fish', 'soy', 'sesame', 'egg', 'dairy', 'nuts'],
-    }),
-    id: integer('id').primaryKey(),
+    value: enum__menu_items_v_version_allergens('value'),
+    id: serial('id').primaryKey(),
   },
   (columns) => [
     index('_menu_items_v_version_allergens_order_idx').on(columns.order),
@@ -1214,10 +1391,10 @@ export const _menu_items_v_version_allergens = sqliteTable(
   ],
 )
 
-export const _menu_items_v = sqliteTable(
+export const _menu_items_v = pgTable(
   '_menu_items_v',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     parent: integer('parent_id').references(() => menu_items.id, {
       onDelete: 'set null',
     }),
@@ -1228,30 +1405,36 @@ export const _menu_items_v = sqliteTable(
     version_category: integer('version_category_id').references(() => categories.id, {
       onDelete: 'set null',
     }),
-    version_featured: integer('version_featured', { mode: 'boolean' }).default(false),
-    version_available: integer('version_available', { mode: 'boolean' }).default(true),
-    version_publishedAt: text('version_published_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version_generateSlug: integer('version_generate_slug', { mode: 'boolean' }).default(true),
-    version_slug: text('version_slug'),
-    version_updatedAt: text('version_updated_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version_createdAt: text('version_created_at').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    version__status: text('version__status', { enum: ['draft', 'published'] }).default('draft'),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    snapshot: integer('snapshot', { mode: 'boolean' }),
-    publishedLocale: text('published_locale', { enum: ['en', 'zh'] }),
-    latest: integer('latest', { mode: 'boolean' }),
-    autosave: integer('autosave', { mode: 'boolean' }),
+    version_featured: boolean('version_featured').default(false),
+    version_available: boolean('version_available').default(true),
+    version_publishedAt: timestamp('version_published_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_generateSlug: boolean('version_generate_slug').default(true),
+    version_slug: varchar('version_slug'),
+    version_updatedAt: timestamp('version_updated_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_createdAt: timestamp('version_created_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version__status: enum__menu_items_v_version_status('version__status').default('draft'),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    snapshot: boolean('snapshot'),
+    publishedLocale: enum__menu_items_v_published_locale('published_locale'),
+    latest: boolean('latest'),
+    autosave: boolean('autosave'),
   },
   (columns) => [
     index('_menu_items_v_parent_idx').on(columns.parent),
@@ -1270,18 +1453,18 @@ export const _menu_items_v = sqliteTable(
   ],
 )
 
-export const _menu_items_v_locales = sqliteTable(
+export const _menu_items_v_locales = pgTable(
   '_menu_items_v_locales',
   {
-    version_title: text('version_title'),
-    version_description: text('version_description'),
-    version_meta_title: text('version_meta_title'),
+    version_title: varchar('version_title'),
+    version_description: varchar('version_description'),
+    version_meta_title: varchar('version_meta_title'),
     version_meta_image: integer('version_meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    version_meta_description: text('version_meta_description'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    version_meta_description: varchar('version_meta_description'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -1301,16 +1484,18 @@ export const _menu_items_v_locales = sqliteTable(
   ],
 )
 
-export const users_sessions = sqliteTable(
+export const users_sessions = pgTable(
   'users_sessions',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    createdAt: text('created_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    expiresAt: text('expires_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    id: varchar('id').primaryKey(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
+    expiresAt: timestamp('expires_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
   },
   (columns) => [
     index('users_sessions_order_idx').on(columns._order),
@@ -1323,26 +1508,28 @@ export const users_sessions = sqliteTable(
   ],
 )
 
-export const users = sqliteTable(
+export const users = pgTable(
   'users',
   {
-    id: integer('id').primaryKey(),
-    name: text('name'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    email: text('email').notNull(),
-    resetPasswordToken: text('reset_password_token'),
-    resetPasswordExpiration: text('reset_password_expiration').default(
-      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
-    ),
-    salt: text('salt'),
-    hash: text('hash'),
+    id: serial('id').primaryKey(),
+    name: varchar('name'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    email: varchar('email').notNull(),
+    resetPasswordToken: varchar('reset_password_token'),
+    resetPasswordExpiration: timestamp('reset_password_expiration', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    salt: varchar('salt'),
+    hash: varchar('hash'),
     loginAttempts: numeric('login_attempts', { mode: 'number' }).default(0),
-    lockUntil: text('lock_until').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    lockUntil: timestamp('lock_until', { mode: 'string', withTimezone: true, precision: 3 }),
   },
   (columns) => [
     index('users_updated_at_idx').on(columns.updatedAt),
@@ -1351,19 +1538,19 @@ export const users = sqliteTable(
   ],
 )
 
-export const redirects = sqliteTable(
+export const redirects = pgTable(
   'redirects',
   {
-    id: integer('id').primaryKey(),
-    from: text('from').notNull(),
-    to_type: text('to_type', { enum: ['reference', 'custom'] }).default('reference'),
-    to_url: text('to_url'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    id: serial('id').primaryKey(),
+    from: varchar('from').notNull(),
+    to_type: enum_redirects_to_type('to_type').default('reference'),
+    to_url: varchar('to_url'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     uniqueIndex('redirects_from_idx').on(columns.from),
@@ -1372,13 +1559,13 @@ export const redirects = sqliteTable(
   ],
 )
 
-export const redirects_rels = sqliteTable(
+export const redirects_rels = pgTable(
   'redirects_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     pagesID: integer('pages_id'),
     postsID: integer('posts_id'),
   },
@@ -1406,18 +1593,18 @@ export const redirects_rels = sqliteTable(
   ],
 )
 
-export const forms_blocks_checkbox = sqliteTable(
+export const forms_blocks_checkbox = pgTable(
   'forms_blocks_checkbox',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    defaultValue: integer('default_value', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    defaultValue: boolean('default_value'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_checkbox_order_idx').on(columns._order),
@@ -1431,13 +1618,13 @@ export const forms_blocks_checkbox = sqliteTable(
   ],
 )
 
-export const forms_blocks_checkbox_locales = sqliteTable(
+export const forms_blocks_checkbox_locales = pgTable(
   'forms_blocks_checkbox_locales',
   {
-    label: text('label'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_checkbox_locales_locale_parent_id_unique').on(
@@ -1452,17 +1639,17 @@ export const forms_blocks_checkbox_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_country = sqliteTable(
+export const forms_blocks_country = pgTable(
   'forms_blocks_country',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_country_order_idx').on(columns._order),
@@ -1476,13 +1663,13 @@ export const forms_blocks_country = sqliteTable(
   ],
 )
 
-export const forms_blocks_country_locales = sqliteTable(
+export const forms_blocks_country_locales = pgTable(
   'forms_blocks_country_locales',
   {
-    label: text('label'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_country_locales_locale_parent_id_unique').on(
@@ -1497,17 +1684,17 @@ export const forms_blocks_country_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_email = sqliteTable(
+export const forms_blocks_email = pgTable(
   'forms_blocks_email',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_email_order_idx').on(columns._order),
@@ -1521,13 +1708,13 @@ export const forms_blocks_email = sqliteTable(
   ],
 )
 
-export const forms_blocks_email_locales = sqliteTable(
+export const forms_blocks_email_locales = pgTable(
   'forms_blocks_email_locales',
   {
-    label: text('label'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_email_locales_locale_parent_id_unique').on(
@@ -1542,14 +1729,14 @@ export const forms_blocks_email_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_message = sqliteTable(
+export const forms_blocks_message = pgTable(
   'forms_blocks_message',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    blockName: text('block_name'),
+    id: varchar('id').primaryKey(),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_message_order_idx').on(columns._order),
@@ -1563,13 +1750,13 @@ export const forms_blocks_message = sqliteTable(
   ],
 )
 
-export const forms_blocks_message_locales = sqliteTable(
+export const forms_blocks_message_locales = pgTable(
   'forms_blocks_message_locales',
   {
-    message: text('message', { mode: 'json' }),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    message: jsonb('message'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_message_locales_locale_parent_id_unique').on(
@@ -1584,18 +1771,18 @@ export const forms_blocks_message_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_number = sqliteTable(
+export const forms_blocks_number = pgTable(
   'forms_blocks_number',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
     defaultValue: numeric('default_value', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_number_order_idx').on(columns._order),
@@ -1609,13 +1796,13 @@ export const forms_blocks_number = sqliteTable(
   ],
 )
 
-export const forms_blocks_number_locales = sqliteTable(
+export const forms_blocks_number_locales = pgTable(
   'forms_blocks_number_locales',
   {
-    label: text('label'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_number_locales_locale_parent_id_unique').on(
@@ -1630,13 +1817,13 @@ export const forms_blocks_number_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_select_options = sqliteTable(
+export const forms_blocks_select_options = pgTable(
   'forms_blocks_select_options',
   {
     _order: integer('_order').notNull(),
-    _parentID: text('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    value: text('value').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    value: varchar('value').notNull(),
   },
   (columns) => [
     index('forms_blocks_select_options_order_idx').on(columns._order),
@@ -1649,13 +1836,13 @@ export const forms_blocks_select_options = sqliteTable(
   ],
 )
 
-export const forms_blocks_select_options_locales = sqliteTable(
+export const forms_blocks_select_options_locales = pgTable(
   'forms_blocks_select_options_locales',
   {
-    label: text('label').notNull(),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label').notNull(),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_select_options_locales_locale_parent_id_unique').on(
@@ -1670,18 +1857,18 @@ export const forms_blocks_select_options_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_select = sqliteTable(
+export const forms_blocks_select = pgTable(
   'forms_blocks_select',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    placeholder: text('placeholder'),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    placeholder: varchar('placeholder'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_select_order_idx').on(columns._order),
@@ -1695,14 +1882,14 @@ export const forms_blocks_select = sqliteTable(
   ],
 )
 
-export const forms_blocks_select_locales = sqliteTable(
+export const forms_blocks_select_locales = pgTable(
   'forms_blocks_select_locales',
   {
-    label: text('label'),
-    defaultValue: text('default_value'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    defaultValue: varchar('default_value'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_select_locales_locale_parent_id_unique').on(
@@ -1717,17 +1904,17 @@ export const forms_blocks_select_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_state = sqliteTable(
+export const forms_blocks_state = pgTable(
   'forms_blocks_state',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_state_order_idx').on(columns._order),
@@ -1741,13 +1928,13 @@ export const forms_blocks_state = sqliteTable(
   ],
 )
 
-export const forms_blocks_state_locales = sqliteTable(
+export const forms_blocks_state_locales = pgTable(
   'forms_blocks_state_locales',
   {
-    label: text('label'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_state_locales_locale_parent_id_unique').on(
@@ -1762,17 +1949,17 @@ export const forms_blocks_state_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_text = sqliteTable(
+export const forms_blocks_text = pgTable(
   'forms_blocks_text',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_text_order_idx').on(columns._order),
@@ -1786,14 +1973,14 @@ export const forms_blocks_text = sqliteTable(
   ],
 )
 
-export const forms_blocks_text_locales = sqliteTable(
+export const forms_blocks_text_locales = pgTable(
   'forms_blocks_text_locales',
   {
-    label: text('label'),
-    defaultValue: text('default_value'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    defaultValue: varchar('default_value'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_text_locales_locale_parent_id_unique').on(
@@ -1808,17 +1995,17 @@ export const forms_blocks_text_locales = sqliteTable(
   ],
 )
 
-export const forms_blocks_textarea = sqliteTable(
+export const forms_blocks_textarea = pgTable(
   'forms_blocks_textarea',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: text('id').primaryKey(),
-    name: text('name').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
     width: numeric('width', { mode: 'number' }),
-    required: integer('required', { mode: 'boolean' }),
-    blockName: text('block_name'),
+    required: boolean('required'),
+    blockName: varchar('block_name'),
   },
   (columns) => [
     index('forms_blocks_textarea_order_idx').on(columns._order),
@@ -1832,14 +2019,14 @@ export const forms_blocks_textarea = sqliteTable(
   ],
 )
 
-export const forms_blocks_textarea_locales = sqliteTable(
+export const forms_blocks_textarea_locales = pgTable(
   'forms_blocks_textarea_locales',
   {
-    label: text('label'),
-    defaultValue: text('default_value'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    label: varchar('label'),
+    defaultValue: varchar('default_value'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_blocks_textarea_locales_locale_parent_id_unique').on(
@@ -1854,17 +2041,17 @@ export const forms_blocks_textarea_locales = sqliteTable(
   ],
 )
 
-export const forms_emails = sqliteTable(
+export const forms_emails = pgTable(
   'forms_emails',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    emailTo: text('email_to'),
-    cc: text('cc'),
-    bcc: text('bcc'),
-    replyTo: text('reply_to'),
-    emailFrom: text('email_from'),
+    id: varchar('id').primaryKey(),
+    emailTo: varchar('email_to'),
+    cc: varchar('cc'),
+    bcc: varchar('bcc'),
+    replyTo: varchar('reply_to'),
+    emailFrom: varchar('email_from'),
   },
   (columns) => [
     index('forms_emails_order_idx').on(columns._order),
@@ -1877,14 +2064,14 @@ export const forms_emails = sqliteTable(
   ],
 )
 
-export const forms_emails_locales = sqliteTable(
+export const forms_emails_locales = pgTable(
   'forms_emails_locales',
   {
-    subject: text('subject').notNull().default("You've received a new message."),
-    message: text('message', { mode: 'json' }),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
-    _parentID: text('_parent_id').notNull(),
+    subject: varchar('subject').notNull().default("You've received a new message."),
+    message: jsonb('message'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
   },
   (columns) => [
     uniqueIndex('forms_emails_locales_locale_parent_id_unique').on(
@@ -1899,21 +2086,19 @@ export const forms_emails_locales = sqliteTable(
   ],
 )
 
-export const forms = sqliteTable(
+export const forms = pgTable(
   'forms',
   {
-    id: integer('id').primaryKey(),
-    title: text('title').notNull(),
-    confirmationType: text('confirmation_type', { enum: ['message', 'redirect'] }).default(
-      'message',
-    ),
-    redirect_url: text('redirect_url'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    id: serial('id').primaryKey(),
+    title: varchar('title').notNull(),
+    confirmationType: enum_forms_confirmation_type('confirmation_type').default('message'),
+    redirect_url: varchar('redirect_url'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('forms_updated_at_idx').on(columns.updatedAt),
@@ -1921,13 +2106,13 @@ export const forms = sqliteTable(
   ],
 )
 
-export const forms_locales = sqliteTable(
+export const forms_locales = pgTable(
   'forms_locales',
   {
-    submitButtonLabel: text('submit_button_label'),
-    confirmationMessage: text('confirmation_message', { mode: 'json' }),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    submitButtonLabel: varchar('submit_button_label'),
+    confirmationMessage: jsonb('confirmation_message'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -1940,14 +2125,14 @@ export const forms_locales = sqliteTable(
   ],
 )
 
-export const form_submissions_submission_data = sqliteTable(
+export const form_submissions_submission_data = pgTable(
   'form_submissions_submission_data',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    field: text('field').notNull(),
-    value: text('value').notNull(),
+    id: varchar('id').primaryKey(),
+    field: varchar('field').notNull(),
+    value: varchar('value').notNull(),
   },
   (columns) => [
     index('form_submissions_submission_data_order_idx').on(columns._order),
@@ -1960,21 +2145,21 @@ export const form_submissions_submission_data = sqliteTable(
   ],
 )
 
-export const form_submissions = sqliteTable(
+export const form_submissions = pgTable(
   'form_submissions',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     form: integer('form_id')
       .notNull()
       .references(() => forms.id, {
         onDelete: 'set null',
       }),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('form_submissions_form_idx').on(columns.form),
@@ -1983,15 +2168,15 @@ export const form_submissions = sqliteTable(
   ],
 )
 
-export const search_categories = sqliteTable(
+export const search_categories = pgTable(
   'search_categories',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    relationTo: text('relation_to'),
-    categoryID: text('category_i_d'),
-    title: text('title'),
+    id: varchar('id').primaryKey(),
+    relationTo: varchar('relation_to'),
+    categoryID: varchar('category_i_d'),
+    title: varchar('title'),
   },
   (columns) => [
     index('search_categories_order_idx').on(columns._order),
@@ -2004,23 +2189,23 @@ export const search_categories = sqliteTable(
   ],
 )
 
-export const search = sqliteTable(
+export const search = pgTable(
   'search',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     priority: numeric('priority', { mode: 'number' }),
-    slug: text('slug'),
-    meta_title: text('meta_title'),
-    meta_description: text('meta_description'),
+    slug: varchar('slug'),
+    meta_title: varchar('meta_title'),
+    meta_description: varchar('meta_description'),
     meta_image: integer('meta_image_id').references(() => media.id, {
       onDelete: 'set null',
     }),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('search_slug_idx').on(columns.slug),
@@ -2030,12 +2215,12 @@ export const search = sqliteTable(
   ],
 )
 
-export const search_locales = sqliteTable(
+export const search_locales = pgTable(
   'search_locales',
   {
-    title: text('title'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    title: varchar('title'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -2048,13 +2233,13 @@ export const search_locales = sqliteTable(
   ],
 )
 
-export const search_rels = sqliteTable(
+export const search_rels = pgTable(
   'search_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     postsID: integer('posts_id'),
     'menu-itemsID': integer('menu_items_id'),
   },
@@ -2082,34 +2267,38 @@ export const search_rels = sqliteTable(
   ],
 )
 
-export const payload_kv = sqliteTable(
+export const payload_kv = pgTable(
   'payload_kv',
   {
-    id: integer('id').primaryKey(),
-    key: text('key').notNull(),
-    data: text('data', { mode: 'json' }).notNull(),
+    id: serial('id').primaryKey(),
+    key: varchar('key').notNull(),
+    data: jsonb('data').notNull(),
   },
   (columns) => [uniqueIndex('payload_kv_key_idx').on(columns.key)],
 )
 
-export const payload_jobs_log = sqliteTable(
+export const payload_jobs_log = pgTable(
   'payload_jobs_log',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    executedAt: text('executed_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    completedAt: text('completed_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    taskSlug: text('task_slug', { enum: ['inline', 'schedulePublish'] }).notNull(),
-    taskID: text('task_i_d').notNull(),
-    input: text('input', { mode: 'json' }),
-    output: text('output', { mode: 'json' }),
-    state: text('state', { enum: ['failed', 'succeeded'] }).notNull(),
-    error: text('error', { mode: 'json' }),
+    id: varchar('id').primaryKey(),
+    executedAt: timestamp('executed_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    completedAt: timestamp('completed_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    taskSlug: enum_payload_jobs_log_task_slug('task_slug').notNull(),
+    taskID: varchar('task_i_d').notNull(),
+    input: jsonb('input'),
+    output: jsonb('output'),
+    state: enum_payload_jobs_log_state('state').notNull(),
+    error: jsonb('error'),
   },
   (columns) => [
     index('payload_jobs_log_order_idx').on(columns._order),
@@ -2122,25 +2311,25 @@ export const payload_jobs_log = sqliteTable(
   ],
 )
 
-export const payload_jobs = sqliteTable(
+export const payload_jobs = pgTable(
   'payload_jobs',
   {
-    id: integer('id').primaryKey(),
-    input: text('input', { mode: 'json' }),
-    completedAt: text('completed_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    id: serial('id').primaryKey(),
+    input: jsonb('input'),
+    completedAt: timestamp('completed_at', { mode: 'string', withTimezone: true, precision: 3 }),
     totalTried: numeric('total_tried', { mode: 'number' }).default(0),
-    hasError: integer('has_error', { mode: 'boolean' }).default(false),
-    error: text('error', { mode: 'json' }),
-    taskSlug: text('task_slug', { enum: ['inline', 'schedulePublish'] }),
-    queue: text('queue').default('default'),
-    waitUntil: text('wait_until').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    processing: integer('processing', { mode: 'boolean' }).default(false),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    hasError: boolean('has_error').default(false),
+    error: jsonb('error'),
+    taskSlug: enum_payload_jobs_task_slug('task_slug'),
+    queue: varchar('queue').default('default'),
+    waitUntil: timestamp('wait_until', { mode: 'string', withTimezone: true, precision: 3 }),
+    processing: boolean('processing').default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('payload_jobs_completed_at_idx').on(columns.completedAt),
@@ -2155,13 +2344,13 @@ export const payload_jobs = sqliteTable(
   ],
 )
 
-export const payload_folders_folder_type = sqliteTable(
+export const payload_folders_folder_type = pgTable(
   'payload_folders_folder_type',
   {
     order: integer('order').notNull(),
     parent: integer('parent_id').notNull(),
-    value: text('value', { enum: ['media'] }),
-    id: integer('id').primaryKey(),
+    value: enum_payload_folders_folder_type('value'),
+    id: serial('id').primaryKey(),
   },
   (columns) => [
     index('payload_folders_folder_type_order_idx').on(columns.order),
@@ -2174,20 +2363,20 @@ export const payload_folders_folder_type = sqliteTable(
   ],
 )
 
-export const payload_folders = sqliteTable(
+export const payload_folders = pgTable(
   'payload_folders',
   {
-    id: integer('id').primaryKey(),
-    name: text('name').notNull(),
-    folder: integer('folder_id').references((): AnySQLiteColumn => payload_folders.id, {
+    id: serial('id').primaryKey(),
+    name: varchar('name').notNull(),
+    folder: integer('folder_id').references((): AnyPgColumn => payload_folders.id, {
       onDelete: 'set null',
     }),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('payload_folders_name_idx').on(columns.name),
@@ -2197,17 +2386,17 @@ export const payload_folders = sqliteTable(
   ],
 )
 
-export const payload_locked_documents = sqliteTable(
+export const payload_locked_documents = pgTable(
   'payload_locked_documents',
   {
-    id: integer('id').primaryKey(),
-    globalSlug: text('global_slug'),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    id: serial('id').primaryKey(),
+    globalSlug: varchar('global_slug'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('payload_locked_documents_global_slug_idx').on(columns.globalSlug),
@@ -2216,13 +2405,13 @@ export const payload_locked_documents = sqliteTable(
   ],
 )
 
-export const payload_locked_documents_rels = sqliteTable(
+export const payload_locked_documents_rels = pgTable(
   'payload_locked_documents_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     pagesID: integer('pages_id'),
     postsID: integer('posts_id'),
     mediaID: integer('media_id'),
@@ -2315,18 +2504,18 @@ export const payload_locked_documents_rels = sqliteTable(
   ],
 )
 
-export const payload_preferences = sqliteTable(
+export const payload_preferences = pgTable(
   'payload_preferences',
   {
-    id: integer('id').primaryKey(),
-    key: text('key'),
-    value: text('value', { mode: 'json' }),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    id: serial('id').primaryKey(),
+    key: varchar('key'),
+    value: jsonb('value'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('payload_preferences_key_idx').on(columns.key),
@@ -2335,13 +2524,13 @@ export const payload_preferences = sqliteTable(
   ],
 )
 
-export const payload_preferences_rels = sqliteTable(
+export const payload_preferences_rels = pgTable(
   'payload_preferences_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     usersID: integer('users_id'),
   },
   (columns) => [
@@ -2362,18 +2551,18 @@ export const payload_preferences_rels = sqliteTable(
   ],
 )
 
-export const payload_migrations = sqliteTable(
+export const payload_migrations = pgTable(
   'payload_migrations',
   {
-    id: integer('id').primaryKey(),
-    name: text('name'),
+    id: serial('id').primaryKey(),
+    name: varchar('name'),
     batch: numeric('batch', { mode: 'number' }),
-    updatedAt: text('updated_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-    createdAt: text('created_at')
-      .notNull()
-      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
     index('payload_migrations_updated_at_idx').on(columns.updatedAt),
@@ -2381,16 +2570,16 @@ export const payload_migrations = sqliteTable(
   ],
 )
 
-export const header_nav_items = sqliteTable(
+export const header_nav_items = pgTable(
   'header_nav_items',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label').notNull(),
+    id: varchar('id').primaryKey(),
+    link_type: enum_header_nav_items_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label').notNull(),
   },
   (columns) => [
     index('header_nav_items_order_idx').on(columns._order),
@@ -2403,19 +2592,19 @@ export const header_nav_items = sqliteTable(
   ],
 )
 
-export const header = sqliteTable('header', {
-  id: integer('id').primaryKey(),
-  updatedAt: text('updated_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-  createdAt: text('created_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+export const header = pgTable('header', {
+  id: serial('id').primaryKey(),
+  updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
+  createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
 })
 
-export const header_rels = sqliteTable(
+export const header_rels = pgTable(
   'header_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     pagesID: integer('pages_id'),
     postsID: integer('posts_id'),
   },
@@ -2443,16 +2632,16 @@ export const header_rels = sqliteTable(
   ],
 )
 
-export const footer_nav_items = sqliteTable(
+export const footer_nav_items = pgTable(
   'footer_nav_items',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
-    id: text('id').primaryKey(),
-    link_type: text('link_type', { enum: ['reference', 'custom'] }).default('reference'),
-    link_newTab: integer('link_new_tab', { mode: 'boolean' }),
-    link_url: text('link_url'),
-    link_label: text('link_label').notNull(),
+    id: varchar('id').primaryKey(),
+    link_type: enum_footer_nav_items_link_type('link_type').default('reference'),
+    link_newTab: boolean('link_new_tab'),
+    link_url: varchar('link_url'),
+    link_label: varchar('link_label').notNull(),
   },
   (columns) => [
     index('footer_nav_items_order_idx').on(columns._order),
@@ -2465,21 +2654,21 @@ export const footer_nav_items = sqliteTable(
   ],
 )
 
-export const footer = sqliteTable('footer', {
-  id: integer('id').primaryKey(),
-  phone: text('phone').default('+852 2345 6789'),
-  email: text('email').default('info@matsu-sushi.hk'),
-  updatedAt: text('updated_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
-  createdAt: text('created_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+export const footer = pgTable('footer', {
+  id: serial('id').primaryKey(),
+  phone: varchar('phone').default('+852 2345 6789'),
+  email: varchar('email').default('info@matsu-sushi.hk'),
+  updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
+  createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
 })
 
-export const footer_locales = sqliteTable(
+export const footer_locales = pgTable(
   'footer_locales',
   {
-    address: text('address').default('G/F, 88 Stanley Street, Central, Hong Kong'),
-    hours: text('hours').default('Mon–Sun: 12:00 – 22:30'),
-    id: integer('id').primaryKey(),
-    _locale: text('_locale', { enum: ['en', 'zh'] }).notNull(),
+    address: varchar('address').default('G/F, 88 Stanley Street, Central, Hong Kong'),
+    hours: varchar('hours').default('Mon–Sun: 12:00 – 22:30'),
+    id: serial('id').primaryKey(),
+    _locale: enum__locales('_locale').notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => [
@@ -2492,13 +2681,13 @@ export const footer_locales = sqliteTable(
   ],
 )
 
-export const footer_rels = sqliteTable(
+export const footer_rels = pgTable(
   'footer_rels',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: text('path').notNull(),
+    path: varchar('path').notNull(),
     pagesID: integer('pages_id'),
     postsID: integer('posts_id'),
   },
@@ -3689,6 +3878,46 @@ export const relations_footer = relations(footer, ({ many }) => ({
 }))
 
 type DatabaseSchema = {
+  enum__locales: typeof enum__locales
+  enum_pages_hero_links_link_type: typeof enum_pages_hero_links_link_type
+  enum_pages_hero_links_link_appearance: typeof enum_pages_hero_links_link_appearance
+  enum_pages_blocks_cta_links_link_type: typeof enum_pages_blocks_cta_links_link_type
+  enum_pages_blocks_cta_links_link_appearance: typeof enum_pages_blocks_cta_links_link_appearance
+  enum_pages_blocks_content_columns_size: typeof enum_pages_blocks_content_columns_size
+  enum_pages_blocks_content_columns_link_type: typeof enum_pages_blocks_content_columns_link_type
+  enum_pages_blocks_content_columns_link_appearance: typeof enum_pages_blocks_content_columns_link_appearance
+  enum_pages_blocks_archive_populate_by: typeof enum_pages_blocks_archive_populate_by
+  enum_pages_blocks_archive_relation_to: typeof enum_pages_blocks_archive_relation_to
+  enum_pages_hero_type: typeof enum_pages_hero_type
+  enum_pages_status: typeof enum_pages_status
+  enum__pages_v_version_hero_links_link_type: typeof enum__pages_v_version_hero_links_link_type
+  enum__pages_v_version_hero_links_link_appearance: typeof enum__pages_v_version_hero_links_link_appearance
+  enum__pages_v_blocks_cta_links_link_type: typeof enum__pages_v_blocks_cta_links_link_type
+  enum__pages_v_blocks_cta_links_link_appearance: typeof enum__pages_v_blocks_cta_links_link_appearance
+  enum__pages_v_blocks_content_columns_size: typeof enum__pages_v_blocks_content_columns_size
+  enum__pages_v_blocks_content_columns_link_type: typeof enum__pages_v_blocks_content_columns_link_type
+  enum__pages_v_blocks_content_columns_link_appearance: typeof enum__pages_v_blocks_content_columns_link_appearance
+  enum__pages_v_blocks_archive_populate_by: typeof enum__pages_v_blocks_archive_populate_by
+  enum__pages_v_blocks_archive_relation_to: typeof enum__pages_v_blocks_archive_relation_to
+  enum__pages_v_version_hero_type: typeof enum__pages_v_version_hero_type
+  enum__pages_v_version_status: typeof enum__pages_v_version_status
+  enum__pages_v_published_locale: typeof enum__pages_v_published_locale
+  enum_posts_status: typeof enum_posts_status
+  enum__posts_v_version_status: typeof enum__posts_v_version_status
+  enum__posts_v_published_locale: typeof enum__posts_v_published_locale
+  enum_menu_items_allergens: typeof enum_menu_items_allergens
+  enum_menu_items_status: typeof enum_menu_items_status
+  enum__menu_items_v_version_allergens: typeof enum__menu_items_v_version_allergens
+  enum__menu_items_v_version_status: typeof enum__menu_items_v_version_status
+  enum__menu_items_v_published_locale: typeof enum__menu_items_v_published_locale
+  enum_redirects_to_type: typeof enum_redirects_to_type
+  enum_forms_confirmation_type: typeof enum_forms_confirmation_type
+  enum_payload_jobs_log_task_slug: typeof enum_payload_jobs_log_task_slug
+  enum_payload_jobs_log_state: typeof enum_payload_jobs_log_state
+  enum_payload_jobs_task_slug: typeof enum_payload_jobs_task_slug
+  enum_payload_folders_folder_type: typeof enum_payload_folders_folder_type
+  enum_header_nav_items_link_type: typeof enum_header_nav_items_link_type
+  enum_footer_nav_items_link_type: typeof enum_footer_nav_items_link_type
   pages_hero_links: typeof pages_hero_links
   pages_blocks_cta_links: typeof pages_blocks_cta_links
   pages_blocks_cta: typeof pages_blocks_cta
@@ -3879,7 +4108,7 @@ type DatabaseSchema = {
   relations_footer: typeof relations_footer
 }
 
-declare module '@payloadcms/db-sqlite' {
+declare module '@payloadcms/db-postgres' {
   export interface GeneratedDatabaseSchema {
     schema: DatabaseSchema
   }

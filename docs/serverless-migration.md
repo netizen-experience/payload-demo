@@ -1,6 +1,6 @@
 # Serverless Migration Notes (AWS + IaC)
 
-**Status**: Recommendation made, not yet started.
+**Status**: Phase 1 (DB adapter swap) complete. Phases 2-5 not started.
 **Recommendation**: Migrate. Low/spiky traffic + cost-driven motivation is a good fit for serverless, and this app is already close to serverless-ready.
 
 ## Why migrate
@@ -13,7 +13,7 @@
 
 (Will change during migration — recorded here for reference.)
 
-- **Database**: SQLite via `@payloadcms/db-sqlite`, file-based (`DATABASE_URL=file:./payload-demo.db`) — [src/payload.config.ts](../src/payload.config.ts)
+- **Database**: Postgres via `@payloadcms/db-postgres` (as of Phase 1), local dev via Docker (`docker-compose.yml`), schema managed via explicit migrations in `src/migrations/` (`push: false`) — [src/payload.config.ts](../src/payload.config.ts)
 - **Media storage**: local filesystem via `staticDir`, mounted as a Docker volume — [src/collections/Media.ts](../src/collections/Media.ts)
 - **Scheduled publishing**: Payload jobs queue, gated by a `CRON_SECRET` bearer token, triggered externally — [src/payload.config.ts](../src/payload.config.ts)
 - **Hosting**: Docker / docker-compose, Next.js `standalone` output, port 3000
@@ -22,7 +22,7 @@
 
 | Current | Problem on serverless | Fix |
 |---|---|---|
-| SQLite file | No persistent local disk between invocations | Swap to `@payloadcms/db-postgres` against RDS |
+| ~~SQLite file~~ (resolved in Phase 1 — now Postgres) | No persistent local disk between invocations | Point `@payloadcms/db-postgres` at RDS |
 | Local filesystem media | Filesystem is ephemeral per-invocation | Add `@payloadcms/storage-s3` → S3 + CloudFront |
 | External process hits jobs endpoint with `CRON_SECRET` | No always-on process to poll | EventBridge Scheduler → same jobs endpoint, same token |
 
@@ -49,8 +49,15 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 
 ## Phased plan
 
-1. **DB**: Swap DB adapter to Postgres; run against local/dockerized Postgres; validate collections + `schedulePublish`.
+1. **DB** ✅ done: Swapped DB adapter to Postgres; runs against local/dockerized Postgres (`docker-compose.yml`); schema managed via explicit migrations in `src/migrations/`; seed and `schedulePublish` validated on Pages/Posts/MenuItems.
 2. **Media**: Add `@payloadcms/storage-s3`; migrate existing `public/media` files to S3; repoint URLs.
 3. **Infra**: Stand up OpenNext + SST (or chosen IaC) targeting a staging AWS environment.
 4. **Cron**: Point EventBridge Scheduler at the jobs endpoint; retire the old cron trigger.
 5. **Cutover**: Switch DNS, monitor, decommission the old VM/Docker host.
+
+## Known issues / follow-ups
+
+Surfaced during Phase 1 verification — none block the DB swap itself, but worth tracking:
+
+- **Stale e2e assertion** — [tests/e2e/frontend.e2e.spec.ts:8](../tests/e2e/frontend.e2e.spec.ts) asserts the Payload boilerplate heading `"Payload Website Template"`, but the seeded restaurant homepage actually renders `"Crafted with Intention."` (from `src/endpoints/seed/restaurant.ts`). This test has been broken since the restaurant content was seeded — it's independent of the DB adapter (fails identically on SQLite or Postgres) but was only just fully exercised end-to-end here. **Fix**: update the assertion to match the real seeded hero heading.
+- **Playwright browsers weren't pre-installed** — `npm run test:e2e` failed with a missing Chromium binary until `npx playwright install chromium` was run manually. Consider adding this to onboarding docs or a `postinstall` step so fresh clones/CI don't hit the same gap.

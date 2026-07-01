@@ -14,6 +14,11 @@ npm run lint:fix     # Auto-fix lint issues
 # Payload code generation (run after schema changes)
 npm run generate:types       # Regenerate src/payload-types.ts
 npm run generate:importmap   # Regenerate app/(payload)/admin/importMap.js
+npx payload generate:db-schema  # Regenerate src/payload-generated-schema.ts
+
+# Database migrations (schema uses explicit migrations, not push mode)
+npx payload migrate:create <name>  # Generate a migration from config changes
+npx payload migrate                # Apply pending migrations
 
 # Type checking
 npx tsc --noEmit
@@ -38,7 +43,7 @@ This is a Japanese sushi restaurant website with dual-language support (English 
 
 **Seed the database** (run once, clears and repopulates all data):
 ```bash
-PAYLOAD_SECRET=80f904adaf380a2865a893f4 DATABASE_URL=file:./payload-demo.db \
+PAYLOAD_SECRET=80f904adaf380a2865a893f4 DATABASE_URL=postgresql://payload:payload@127.0.0.1:5432/payload_demo \
 node --import tsx/esm -e "
 import { getPayload, createLocalReq } from 'payload'
 const { default: config } = await import('./src/payload.config.ts')
@@ -68,7 +73,7 @@ Localized fields: `title`, `description`. Non-localized: `price`, `image`, `cate
 
 ### Payload Configuration (`src/payload.config.ts`)
 
-- **Database**: SQLite via `DATABASE_URL` env var
+- **Database**: Postgres via `DATABASE_URL` env var. Schema is managed via explicit migrations (`push: false`) in `src/migrations/`, not push mode — run `npx payload migrate:create <name>` after config changes, then `npx payload migrate`. Local dev Postgres runs via `docker-compose.yml`.
 - **Collections**: Pages, Posts, Media, Categories, Users
 - **Globals**: Header, Footer
 - **Plugins**: Redirects, Nested Docs, SEO, Form Builder, Search
@@ -103,12 +108,12 @@ await payload.find({ collection: 'posts', user: someUser, overrideAccess: false 
 await req.payload.create({ collection: 'audit-log', data: {...}, req })
 ```
 
-**After schema changes**: run `npm run generate:types` then `npm run generate:importmap`.
+**After schema changes**: run `npm run generate:types`, `npm run generate:importmap`, and `npx payload generate:db-schema`, then generate and apply a migration (`npx payload migrate:create <name> && npx payload migrate`).
 
 ## Environment Variables
 
 See `.env.example`:
-- `DATABASE_URL` — SQLite file path
+- `DATABASE_URL` — Postgres connection string (see `docker-compose.yml` for the local Postgres service)
 - `PAYLOAD_SECRET` — JWT encryption key
 - `NEXT_PUBLIC_SERVER_URL` — e.g. `http://localhost:3000`
 - `CRON_SECRET` — for scheduled publishing
