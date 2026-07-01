@@ -59,5 +59,4 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 
 Surfaced during Phase 1 verification — none block the DB swap itself, but worth tracking:
 
-- **Stale e2e assertion** — [tests/e2e/frontend.e2e.spec.ts:8](../tests/e2e/frontend.e2e.spec.ts) asserts the Payload boilerplate heading `"Payload Website Template"`, but the seeded restaurant homepage actually renders `"Crafted with Intention."` (from `src/endpoints/seed/restaurant.ts`). This test has been broken since the restaurant content was seeded — it's independent of the DB adapter (fails identically on SQLite or Postgres) but was only just fully exercised end-to-end here. **Fix**: update the assertion to match the real seeded hero heading.
 - **Playwright browsers weren't pre-installed** — `npm run test:e2e` failed with a missing Chromium binary until `npx playwright install chromium` was run manually. Consider adding this to onboarding docs or a `postinstall` step so fresh clones/CI don't hit the same gap.
