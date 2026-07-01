@@ -76,7 +76,7 @@ Localized fields: `title`, `description`. Non-localized: `price`, `image`, `cate
 - **Database**: Postgres via `DATABASE_URL` env var. Schema is managed via explicit migrations (`push: false`) in `src/migrations/`, not push mode — run `npx payload migrate:create <name>` after config changes, then `npx payload migrate`. Local dev Postgres runs via `docker-compose.yml`.
 - **Collections**: Pages, Posts, Media, Categories, Users
 - **Globals**: Header, Footer
-- **Plugins**: Redirects, Nested Docs, SEO, Form Builder, Search
+- **Plugins**: Redirects, Nested Docs, SEO, Form Builder, Search, S3 Storage (Media collection — see `S3_BUCKET`/`S3_REGION` below)
 - **Jobs Queue**: Scheduled publishing (requires `CRON_SECRET`)
 - **TypeScript output**: `src/payload-types.ts` (auto-generated — do not edit manually)
 
@@ -118,3 +118,4 @@ See `.env.example`:
 - `NEXT_PUBLIC_SERVER_URL` — e.g. `http://localhost:3000`
 - `CRON_SECRET` — for scheduled publishing
 - `PREVIEW_SECRET` — for draft preview URLs
+- `S3_BUCKET` / `S3_REGION` — media storage (private bucket, served via Payload's `/api/media/file` proxy). Credentials come from the AWS SDK default provider chain, not static keys — locally via `AWS_PROFILE`, in production via an IAM role.

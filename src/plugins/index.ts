@@ -2,6 +2,7 @@ import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -84,6 +85,15 @@ export const plugins: Plugin[] = [
       fields: ({ defaultFields }) => {
         return [...defaultFields, ...searchFields]
       },
+    },
+  }),
+  s3Storage({
+    collections: {
+      media: true,
+    },
+    bucket: process.env.S3_BUCKET || '',
+    config: {
+      region: process.env.S3_REGION,
     },
   }),
 ]
