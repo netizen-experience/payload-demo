@@ -5,23 +5,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev          # Start development server (Next.js + Payload admin at localhost:3000)
-pnpm build        # Production build (runs next-sitemap post-build)
-pnpm start        # Start production server
-pnpm lint         # ESLint check
-pnpm lint:fix     # Auto-fix lint issues
+npm run dev          # Start development server (Next.js + Payload admin at localhost:3000)
+npm run build        # Production build (runs next-sitemap post-build)
+npm run start        # Start production server
+npm run lint         # ESLint check
+npm run lint:fix     # Auto-fix lint issues
 
 # Payload code generation (run after schema changes)
-pnpm generate:types       # Regenerate src/payload-types.ts
-pnpm generate:importmap   # Regenerate app/(payload)/admin/importMap.js
+npm run generate:types       # Regenerate src/payload-types.ts
+npm run generate:importmap   # Regenerate app/(payload)/admin/importMap.js
 
 # Type checking
 npx tsc --noEmit
 
 # Testing
-pnpm test         # Run both integration and E2E tests
-pnpm test:int     # Vitest integration tests (tests/int/**/*.int.spec.ts)
-pnpm test:e2e     # Playwright E2E tests (tests/e2e/)
+npm test             # Run both integration and E2E tests
+npm run test:int     # Vitest integration tests (tests/int/**/*.int.spec.ts)
+npm run test:e2e     # Playwright E2E tests (tests/e2e/)
 ```
 
 ## Restaurant Site: Matsu-Sushi (松壽司)
@@ -103,7 +103,7 @@ await payload.find({ collection: 'posts', user: someUser, overrideAccess: false 
 await req.payload.create({ collection: 'audit-log', data: {...}, req })
 ```
 
-**After schema changes**: run `pnpm generate:types` then `pnpm generate:importmap`.
+**After schema changes**: run `npm run generate:types` then `npm run generate:importmap`.
 
 ## Environment Variables
 
