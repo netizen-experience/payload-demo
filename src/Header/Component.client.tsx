@@ -17,6 +17,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
+  const [prevHeaderTheme, setPrevHeaderTheme] = useState(headerTheme)
   const pathname = usePathname()
 
   // Detect current locale from pathname
@@ -41,9 +42,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     setHeaderTheme(null)
   }, [pathname])
 
-  useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-  }, [headerTheme])
+  if (headerTheme !== prevHeaderTheme) {
+    setPrevHeaderTheme(headerTheme)
+    if (headerTheme) setTheme(headerTheme)
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10)

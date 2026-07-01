@@ -16,9 +16,19 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
   })
 
   return (
-    <div className="relative flex items-center justify-center text-white overflow-hidden" style={{ minHeight: '70vh' }} data-theme="dark">
+    <div
+      className="relative flex items-center justify-center text-white overflow-hidden"
+      style={{ minHeight: '70vh' }}
+      data-theme="dark"
+    >
       {/* Overlay */}
-      <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)' }} />
+      <div
+        className="absolute inset-0 z-10"
+        style={{
+          background:
+            'linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+        }}
+      />
 
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
@@ -29,9 +39,12 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
 
       {/* Content */}
       <div className="container relative z-20 py-24">
-        <div className="max-w-[36rem]">
+        <div className="max-w-xl">
           {/* Decorative line */}
-          <div className="w-12 h-0.5 mb-6" style={{ backgroundColor: 'var(--brand-gold, #C9A84C)' }} />
+          <div
+            className="w-12 h-0.5 mb-6"
+            style={{ backgroundColor: 'var(--brand-gold, #C9A84C)' }}
+          />
 
           {richText && (
             <RichText
