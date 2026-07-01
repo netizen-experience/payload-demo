@@ -30,9 +30,7 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
     })
     dishes = result.docs
   } else if (items && Array.isArray(items)) {
-    dishes = items.filter(
-      (item): item is MenuItem => typeof item === 'object' && item !== null,
-    )
+    dishes = items.filter((item): item is MenuItem => typeof item === 'object' && item !== null)
   }
 
   if (!dishes.length) return null
@@ -42,16 +40,25 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
       <div className="container">
         <div className="text-center mb-10">
           {heading && (
-            <h2 className="text-3xl font-light tracking-wide mb-2" style={{ color: 'var(--brand-dark, #1A1A1A)' }}>
+            <h2
+              className="text-3xl font-light tracking-wide mb-2"
+              style={{ color: 'var(--brand-dark, #1A1A1A)' }}
+            >
               {heading}
             </h2>
           )}
           {subheading && (
-            <p className="text-sm tracking-widest uppercase" style={{ color: 'var(--brand-gold, #C9A84C)' }}>
+            <p
+              className="text-sm tracking-widest uppercase"
+              style={{ color: 'var(--brand-gold, #C9A84C)' }}
+            >
               {subheading}
             </p>
           )}
-          <div className="mt-4 mx-auto w-12 h-0.5" style={{ backgroundColor: 'var(--brand-red, #C41E3A)' }} />
+          <div
+            className="mt-4 mx-auto w-12 h-0.5"
+            style={{ backgroundColor: 'var(--brand-red, #C41E3A)' }}
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -61,7 +68,7 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
               href={`/${locale}/menu/${item.slug || ''}`}
               className="group block bg-white border border-border rounded overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
+              <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
                 {item.image && typeof item.image === 'object' ? (
                   <Media
                     fill
@@ -69,7 +76,10 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
                     resource={item.image}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: '#F5F5F5' }}>
+                  <div
+                    className="w-full h-full flex items-center justify-center"
+                    style={{ backgroundColor: '#F5F5F5' }}
+                  >
                     <span className="text-4xl">🍣</span>
                   </div>
                 )}
@@ -79,7 +89,9 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
                   {item.title}
                 </h3>
                 {item.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{item.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                    {item.description}
+                  </p>
                 )}
                 <p className="text-sm font-semibold" style={{ color: 'var(--brand-red, #C41E3A)' }}>
                   HK${item.price}
@@ -94,7 +106,10 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
             <Link
               href={viewAllLink}
               className="inline-flex items-center gap-2 px-8 py-3 border text-sm font-medium tracking-widest uppercase hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
-              style={{ borderColor: 'var(--brand-red, #C41E3A)', color: 'var(--brand-red, #C41E3A)' }}
+              style={{
+                borderColor: 'var(--brand-red, #C41E3A)',
+                color: 'var(--brand-red, #C41E3A)',
+              }}
             >
               {locale === 'zh' ? '查看全部菜單' : 'View Full Menu'}
             </Link>

@@ -10,7 +10,7 @@ const t = {
   en: {
     title: 'Search',
     noResults: 'No results found.',
-    menuItem: "Menu Item",
+    menuItem: 'Menu Item',
     post: 'Article',
     searchMeta: 'Search | Matsu-Sushi 松壽司',
     placeholder: 'Search dishes, rolls, sashimi…',
@@ -30,7 +30,10 @@ type Args = {
   searchParams: Promise<{ q?: string }>
 }
 
-export default async function SearchPage({ params: paramsPromise, searchParams: searchParamsPromise }: Args) {
+export default async function SearchPage({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
+}: Args) {
   const { locale } = await paramsPromise
   const { q: query } = await searchParamsPromise
   const labels = t[locale as keyof typeof t] || t.en
@@ -69,7 +72,9 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
       {/* Header */}
       <div
         className="py-16 text-center text-white"
-        style={{ background: 'linear-gradient(135deg, var(--brand-dark, #1A1A1A) 0%, #2d1a1a 100%)' }}
+        style={{
+          background: 'linear-gradient(135deg, var(--brand-dark, #1A1A1A) 0%, #2d1a1a 100%)',
+        }}
       >
         <h1 className="text-4xl font-light tracking-wide mb-8">{labels.title}</h1>
         <div className="max-w-xl mx-auto px-4">
@@ -82,13 +87,12 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {results.docs.map((result) => {
               const isMenuItem = result.doc?.relationTo === 'menu-items'
-              const href = isMenuItem
-                ? `/${locale}/menu/${result.slug}`
-                : `/posts/${result.slug}`
+              const href = isMenuItem ? `/${locale}/menu/${result.slug}` : `/posts/${result.slug}`
               const category = result.categories?.[0]?.title
-              const price = isMenuItem && result.meta?.description?.startsWith('HK$')
-                ? result.meta.description
-                : null
+              const price =
+                isMenuItem && result.meta?.description?.startsWith('HK$')
+                  ? result.meta.description
+                  : null
 
               return (
                 <Link
@@ -96,7 +100,7 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
                   href={href}
                   className="group block bg-white border border-border rounded overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                 >
-                  <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                  <div className="relative aspect-4/3 bg-gray-100 overflow-hidden">
                     {result.meta?.image && typeof result.meta.image === 'object' ? (
                       <Media
                         fill
@@ -104,13 +108,20 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
                         resource={result.meta.image}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: '#F5F5F5' }}>
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        style={{ backgroundColor: '#F5F5F5' }}
+                      >
                         <span className="text-4xl opacity-20">{isMenuItem ? '🍣' : '📄'}</span>
                       </div>
                     )}
                     <div
                       className="absolute top-2 left-2 text-white text-xs px-2 py-0.5 rounded"
-                      style={{ backgroundColor: isMenuItem ? 'var(--brand-red, #C41E3A)' : 'var(--brand-dark, #1A1A1A)' }}
+                      style={{
+                        backgroundColor: isMenuItem
+                          ? 'var(--brand-red, #C41E3A)'
+                          : 'var(--brand-dark, #1A1A1A)',
+                      }}
                     >
                       {isMenuItem ? labels.menuItem : labels.post}
                     </div>
@@ -119,11 +130,12 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
                     <h3 className="font-medium text-sm mb-1 group-hover:text-primary transition-colors">
                       {result.title}
                     </h3>
-                    {category && (
-                      <p className="text-xs text-muted-foreground mb-1">{category}</p>
-                    )}
+                    {category && <p className="text-xs text-muted-foreground mb-1">{category}</p>}
                     {price && (
-                      <p className="text-sm font-semibold" style={{ color: 'var(--brand-red, #C41E3A)' }}>
+                      <p
+                        className="text-sm font-semibold"
+                        style={{ color: 'var(--brand-red, #C41E3A)' }}
+                      >
                         {price}
                       </p>
                     )}
@@ -143,7 +155,11 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
   )
 }
 
-export async function generateMetadata({ params: paramsPromise }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params: paramsPromise,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
   const { locale } = await paramsPromise
   const labels = t[locale as keyof typeof t] || t.en
   return { title: labels.searchMeta }
