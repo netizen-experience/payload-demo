@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 
@@ -24,7 +24,7 @@ export default async function LocalePage({ params: paramsPromise }: Args) {
     return <PayloadRedirects url="/" />
   }
 
-  const { hero, layout } = page as any
+  const { hero, layout } = page
 
   return (
     <article>
@@ -49,7 +49,7 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: s
   const result = await payload.find({
     collection: 'pages',
     draft,
-    locale: locale as any,
+    locale: locale as TypedLocale,
     limit: 1,
     pagination: false,
     overrideAccess: draft,

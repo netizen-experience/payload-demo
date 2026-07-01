@@ -1,5 +1,4 @@
 'use client'
-import { getTranslation } from '@payloadcms/translations'
 import { useRowLabel } from '@payloadcms/ui'
 
 export const RowLabel = () => {

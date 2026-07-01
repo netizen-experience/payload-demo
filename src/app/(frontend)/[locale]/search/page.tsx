@@ -1,6 +1,6 @@
 import type { Metadata } from 'next/types'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import React from 'react'
 import Link from 'next/link'
 import { Search } from '@/search/Component'
@@ -40,7 +40,7 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
   const results = await payload.find({
     collection: 'search',
     depth: 1,
-    locale: locale as any,
+    locale: locale as TypedLocale,
     limit: 24,
     pagination: false,
     select: {
@@ -80,7 +80,7 @@ export default async function SearchPage({ params: paramsPromise, searchParams: 
       <div className="container py-12">
         {results.docs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {results.docs.map((result: any) => {
+            {results.docs.map((result) => {
               const isMenuItem = result.doc?.relationTo === 'menu-items'
               const href = isMenuItem
                 ? `/${locale}/menu/${result.slug}`

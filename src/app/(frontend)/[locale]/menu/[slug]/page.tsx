@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import { notFound } from 'next/navigation'
 import React, { cache } from 'react'
 import Link from 'next/link'
 import { Media } from '@/components/Media'
 import { ArrowLeftIcon } from 'lucide-react'
+import type { Category, Media as MediaType } from '@/payload-types'
 
 const allergenLabels: Record<string, { en: string; zh: string }> = {
   gluten: { en: 'Gluten', zh: '麩質' },
@@ -58,9 +59,10 @@ export default async function MenuItemPage({ params: paramsPromise }: Args) {
     notFound()
   }
 
-  const category = typeof item.category === 'object' && item.category !== null
-    ? item.category as any
-    : null
+  const category =
+    typeof item.category === 'object' && item.category !== null
+      ? (item.category as Category)
+      : null
 
   const allergens = (item.allergens || []) as string[]
 
@@ -77,14 +79,14 @@ export default async function MenuItemPage({ params: paramsPromise }: Args) {
             {locale === 'zh' ? '菜單' : 'Menu'}
           </Link>
           <span>/</span>
-          <span className="text-foreground">{item.title as string}</span>
+          <span className="text-foreground">{item.title}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Image */}
           <div className="relative aspect-square rounded overflow-hidden bg-gray-100">
             {item.image && typeof item.image === 'object' ? (
-              <Media fill imgClassName="object-cover" resource={item.image as any} />
+              <Media fill imgClassName="object-cover" resource={item.image as MediaType} />
             ) : (
               <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: '#F5F5F5' }}>
                 <span className="text-8xl opacity-20">🍣</span>
@@ -105,9 +107,7 @@ export default async function MenuItemPage({ params: paramsPromise }: Args) {
               </Link>
             )}
 
-            <h1 className="text-3xl md:text-4xl font-light tracking-wide mb-2">
-              {item.title as string}
-            </h1>
+            <h1 className="text-3xl md:text-4xl font-light tracking-wide mb-2">{item.title}</h1>
 
             <div className="flex items-center gap-4 mb-6">
               <p
@@ -135,7 +135,7 @@ export default async function MenuItemPage({ params: paramsPromise }: Args) {
 
             {item.description && (
               <p className="text-base text-muted-foreground leading-relaxed mb-8">
-                {item.description as string}
+                {item.description}
               </p>
             )}
 
@@ -183,7 +183,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 
   return {
     title: `${item.title} | Matsu-Sushi 松壽司`,
-    description: (item.description as string) || '',
+    description: item.description || '',
   }
 }
 
@@ -192,7 +192,7 @@ const queryMenuItemBySlug = cache(async ({ slug, locale }: { slug: string; local
 
   const result = await payload.find({
     collection: 'menu-items',
-    locale: locale as any,
+    locale: locale as TypedLocale,
     limit: 1,
     pagination: false,
     overrideAccess: false,

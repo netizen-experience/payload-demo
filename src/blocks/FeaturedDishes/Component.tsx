@@ -1,9 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import configPromise from '@payload-config'
 import { Media } from '@/components/Media'
-import type { FeaturedDishesBlock as FeaturedDishesBlockProps } from '@/payload-types'
+import type { FeaturedDishesBlock as FeaturedDishesBlockProps, MenuItem } from '@/payload-types'
 
 type Props = FeaturedDishesBlockProps & {
   locale?: string
@@ -17,20 +17,22 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
   viewAllLink,
   locale = 'en',
 }) => {
-  let dishes: any[] = []
+  let dishes: MenuItem[] = []
 
   if (showAll) {
     const payload = await getPayload({ config: configPromise })
     const result = await payload.find({
       collection: 'menu-items',
-      locale: locale as any,
+      locale: locale as TypedLocale,
       where: { featured: { equals: true }, available: { equals: true } },
       limit: 6,
       draft: false,
     })
     dishes = result.docs
   } else if (items && Array.isArray(items)) {
-    dishes = items.filter((item) => typeof item === 'object' && item !== null)
+    dishes = items.filter(
+      (item): item is MenuItem => typeof item === 'object' && item !== null,
+    )
   }
 
   if (!dishes.length) return null
@@ -53,9 +55,9 @@ export const FeaturedDishesBlock: React.FC<Props> = async ({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dishes.map((item: any) => (
+          {dishes.map((item) => (
             <Link
-              key={item.id || item}
+              key={item.id}
               href={`/${locale}/menu/${item.slug || ''}`}
               className="group block bg-white border border-border rounded overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >

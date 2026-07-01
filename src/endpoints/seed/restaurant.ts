@@ -22,12 +22,12 @@ export const seedRestaurant = async ({
   // Clear existing data (docs + versions for versioned collections)
   const collections = ['menu-items', 'categories', 'pages', 'media'] as const
   for (const col of collections) {
-    await payload.db.deleteMany({ collection: col as any, req, where: {} })
+    await payload.db.deleteMany({ collection: col, req, where: {} })
   }
   // Delete versions separately — deleteMany only clears the main table
   const versionedCollections = ['menu-items', 'pages'] as const
   for (const col of versionedCollections) {
-    await payload.db.deleteVersions({ collection: col as any, req, where: {} })
+    await payload.db.deleteVersions({ collection: col, req, where: {} })
   }
 
   await payload.updateGlobal({
@@ -58,7 +58,7 @@ export const seedRestaurant = async ({
   const heroImgBuffer = { name: 'hero-restaurant.svg', data: createSvgPlaceholder('松壽司 Restaurant', '#2d0a15', '#C9A84C'), mimetype: 'image/svg+xml', size: 400 }
 
   const [
-    heroMedia, nigiriMedia, makiMedia, sashimiMedia, tempuraMedia, edamameMedia, drinkMedia, heroImgMedia
+    _heroMedia, nigiriMedia, makiMedia, sashimiMedia, _tempuraMedia, edamameMedia, drinkMedia, heroImgMedia
   ] = await Promise.all([
     payload.create({ collection: 'media', data: { alt: 'Matsu-Sushi hero' }, file: heroBuffer }),
     payload.create({ collection: 'media', data: { alt: 'Nigiri sushi' }, file: nigiriBuffer }),
@@ -80,38 +80,38 @@ export const seedRestaurant = async ({
         description: 'Hand-pressed sushi with premium fish',
         slug: 'nigiri',
         displayOrder: 1,
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
       collection: 'categories',
-      data: { title: 'Maki Rolls', description: 'Handcrafted sushi rolls', slug: 'maki-rolls', displayOrder: 2 } as any,
+      data: { title: 'Maki Rolls', description: 'Handcrafted sushi rolls', slug: 'maki-rolls', displayOrder: 2 },
       locale: 'en',
     }),
     payload.create({
       collection: 'categories',
-      data: { title: 'Sashimi', description: 'Premium sliced fresh fish', slug: 'sashimi', displayOrder: 3 } as any,
+      data: { title: 'Sashimi', description: 'Premium sliced fresh fish', slug: 'sashimi', displayOrder: 3 },
       locale: 'en',
     }),
     payload.create({
       collection: 'categories',
-      data: { title: 'Appetizers', description: 'Starters and small plates', slug: 'appetizers', displayOrder: 4 } as any,
+      data: { title: 'Appetizers', description: 'Starters and small plates', slug: 'appetizers', displayOrder: 4 },
       locale: 'en',
     }),
     payload.create({
       collection: 'categories',
-      data: { title: 'Drinks', description: 'Sake, beer, and soft drinks', slug: 'drinks', displayOrder: 5 } as any,
+      data: { title: 'Drinks', description: 'Sake, beer, and soft drinks', slug: 'drinks', displayOrder: 5 },
       locale: 'en',
     }),
   ])
 
   // Update categories with Chinese translations
   await Promise.all([
-    payload.update({ collection: 'categories', id: nigiriCat.id, data: { title: '握壽司', description: '精選魚鮮，手握壽司' } as any, locale: 'zh' }),
-    payload.update({ collection: 'categories', id: makiCat.id, data: { title: '壽司卷', description: '精心製作壽司卷' } as any, locale: 'zh' }),
-    payload.update({ collection: 'categories', id: sashimiCat.id, data: { title: '刺身', description: '精選新鮮刺身' } as any, locale: 'zh' }),
-    payload.update({ collection: 'categories', id: appetizersCat.id, data: { title: '前菜', description: '開胃小食' } as any, locale: 'zh' }),
-    payload.update({ collection: 'categories', id: drinksCat.id, data: { title: '飲品', description: '清酒、啤酒及軟飲料' } as any, locale: 'zh' }),
+    payload.update({ collection: 'categories', id: nigiriCat.id, data: { title: '握壽司', description: '精選魚鮮，手握壽司' }, locale: 'zh' }),
+    payload.update({ collection: 'categories', id: makiCat.id, data: { title: '壽司卷', description: '精心製作壽司卷' }, locale: 'zh' }),
+    payload.update({ collection: 'categories', id: sashimiCat.id, data: { title: '刺身', description: '精選新鮮刺身' }, locale: 'zh' }),
+    payload.update({ collection: 'categories', id: appetizersCat.id, data: { title: '前菜', description: '開胃小食' }, locale: 'zh' }),
+    payload.update({ collection: 'categories', id: drinksCat.id, data: { title: '飲品', description: '清酒、啤酒及軟飲料' }, locale: 'zh' }),
   ])
 
   payload.logger.info('— Seeding menu items...')
@@ -131,7 +131,7 @@ export const seedRestaurant = async ({
         allergens: ['fish'],
         slug: 'salmon-nigiri',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -147,7 +147,7 @@ export const seedRestaurant = async ({
         allergens: ['fish'],
         slug: 'bluefin-tuna-nigiri',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -163,7 +163,7 @@ export const seedRestaurant = async ({
         allergens: ['fish'],
         slug: 'yellowtail-nigiri',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -179,7 +179,7 @@ export const seedRestaurant = async ({
         allergens: ['shellfish'],
         slug: 'hokkaido-scallop-nigiri',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
   ])
@@ -199,7 +199,7 @@ export const seedRestaurant = async ({
         allergens: ['fish', 'soy', 'sesame'],
         slug: 'spicy-tuna-roll',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -215,7 +215,7 @@ export const seedRestaurant = async ({
         allergens: ['shellfish', 'gluten', 'fish', 'sesame'],
         slug: 'dragon-roll',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -231,7 +231,7 @@ export const seedRestaurant = async ({
         allergens: ['sesame', 'soy'],
         slug: 'vegetarian-roll',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
   ])
@@ -251,7 +251,7 @@ export const seedRestaurant = async ({
         allergens: ['fish'],
         slug: 'salmon-sashimi',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -267,7 +267,7 @@ export const seedRestaurant = async ({
         allergens: ['fish'],
         slug: 'tuna-sashimi',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -283,7 +283,7 @@ export const seedRestaurant = async ({
         allergens: ['fish', 'shellfish'],
         slug: 'chefs-sashimi-platter',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
   ])
@@ -303,7 +303,7 @@ export const seedRestaurant = async ({
         allergens: ['soy'],
         slug: 'edamame',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -319,7 +319,7 @@ export const seedRestaurant = async ({
         allergens: ['soy'],
         slug: 'miso-soup',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -335,7 +335,7 @@ export const seedRestaurant = async ({
         allergens: ['gluten', 'soy'],
         slug: 'pan-fried-gyoza',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
   ])
@@ -355,7 +355,7 @@ export const seedRestaurant = async ({
         allergens: ['gluten'],
         slug: 'premium-sake',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -371,7 +371,7 @@ export const seedRestaurant = async ({
         allergens: [],
         slug: 'japanese-green-tea',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
     payload.create({
@@ -387,7 +387,7 @@ export const seedRestaurant = async ({
         allergens: ['gluten'],
         slug: 'sapporo-beer',
         _status: 'published',
-      } as any,
+      },
       locale: 'en',
     }),
   ])
@@ -395,26 +395,26 @@ export const seedRestaurant = async ({
   // Add Chinese translations for menu items
   await Promise.all([
     // Nigiri
-    payload.update({ collection: 'menu-items', id: salmonNigiri.id, locale: 'zh', data: { title: '三文魚握壽司', description: '精選大西洋三文魚，手握醋飯，每份2件' } as any }),
-    payload.update({ collection: 'menu-items', id: tunaHigiri.id, locale: 'zh', data: { title: '藍鰭吞拿魚握壽司', description: '野生藍鰭吞拿魚腩（大肥），搭配調味壽司飯，每份2件' } as any }),
-    payload.update({ collection: 'menu-items', id: yellowtailNigiri.id, locale: 'zh', data: { title: '油甘魚握壽司', description: '日本絲滑油甘魚（青魽），手握壽司飯，每份2件' } as any }),
-    payload.update({ collection: 'menu-items', id: scallopsNigiri.id, locale: 'zh', data: { title: '北海道帆立貝握壽司', description: '北海道甜帶子，輕燒配柚子鹽，每份2件' } as any }),
+    payload.update({ collection: 'menu-items', id: salmonNigiri.id, locale: 'zh', data: { title: '三文魚握壽司', description: '精選大西洋三文魚，手握醋飯，每份2件' } }),
+    payload.update({ collection: 'menu-items', id: tunaHigiri.id, locale: 'zh', data: { title: '藍鰭吞拿魚握壽司', description: '野生藍鰭吞拿魚腩（大肥），搭配調味壽司飯，每份2件' } }),
+    payload.update({ collection: 'menu-items', id: yellowtailNigiri.id, locale: 'zh', data: { title: '油甘魚握壽司', description: '日本絲滑油甘魚（青魽），手握壽司飯，每份2件' } }),
+    payload.update({ collection: 'menu-items', id: scallopsNigiri.id, locale: 'zh', data: { title: '北海道帆立貝握壽司', description: '北海道甜帶子，輕燒配柚子鹽，每份2件' } }),
     // Maki
-    payload.update({ collection: 'menu-items', id: spicyTunaRoll.id, locale: 'zh', data: { title: '辣吞拿魚卷', description: '新鮮吞拿魚、辣汁、青瓜及牛油果，每份8件' } as any }),
-    payload.update({ collection: 'menu-items', id: dragonRoll.id, locale: 'zh', data: { title: '龍卷', description: '天婦羅蝦，外層牛油果、飛魚子及鰻魚汁，每份8件' } as any }),
-    payload.update({ collection: 'menu-items', id: vegetarianRoll.id, locale: 'zh', data: { title: '素食卷', description: '牛油果、青瓜、醃蘿蔔及芝麻，每份8件' } as any }),
+    payload.update({ collection: 'menu-items', id: spicyTunaRoll.id, locale: 'zh', data: { title: '辣吞拿魚卷', description: '新鮮吞拿魚、辣汁、青瓜及牛油果，每份8件' } }),
+    payload.update({ collection: 'menu-items', id: dragonRoll.id, locale: 'zh', data: { title: '龍卷', description: '天婦羅蝦，外層牛油果、飛魚子及鰻魚汁，每份8件' } }),
+    payload.update({ collection: 'menu-items', id: vegetarianRoll.id, locale: 'zh', data: { title: '素食卷', description: '牛油果、青瓜、醃蘿蔔及芝麻，每份8件' } }),
     // Sashimi
-    payload.update({ collection: 'menu-items', id: salmonSashimi.id, locale: 'zh', data: { title: '三文魚刺身', description: '五片精選挪威三文魚，配芥末及醃薑' } as any }),
-    payload.update({ collection: 'menu-items', id: tunaSashimi.id, locale: 'zh', data: { title: '吞拿魚刺身', description: '五片藍鰭吞拿魚（赤身），配芥末' } as any }),
-    payload.update({ collection: 'menu-items', id: sashimiPlatter.id, locale: 'zh', data: { title: '主廚刺身拼盤', description: '主廚精選12件時令刺身，今日最佳漁獲' } as any }),
+    payload.update({ collection: 'menu-items', id: salmonSashimi.id, locale: 'zh', data: { title: '三文魚刺身', description: '五片精選挪威三文魚，配芥末及醃薑' } }),
+    payload.update({ collection: 'menu-items', id: tunaSashimi.id, locale: 'zh', data: { title: '吞拿魚刺身', description: '五片藍鰭吞拿魚（赤身），配芥末' } }),
+    payload.update({ collection: 'menu-items', id: sashimiPlatter.id, locale: 'zh', data: { title: '主廚刺身拼盤', description: '主廚精選12件時令刺身，今日最佳漁獲' } }),
     // Appetizers
-    payload.update({ collection: 'menu-items', id: edamame.id, locale: 'zh', data: { title: '毛豆', description: '蒸煮加鹽毛豆' } as any }),
-    payload.update({ collection: 'menu-items', id: miso.id, locale: 'zh', data: { title: '味噌湯', description: '傳統白味噌湯，配豆腐、裙帶菜及蔥' } as any }),
-    payload.update({ collection: 'menu-items', id: gyoza.id, locale: 'zh', data: { title: '煎餃子', description: '香脆豬肉蔬菜餃，配柚子醬油，每份6件' } as any }),
+    payload.update({ collection: 'menu-items', id: edamame.id, locale: 'zh', data: { title: '毛豆', description: '蒸煮加鹽毛豆' } }),
+    payload.update({ collection: 'menu-items', id: miso.id, locale: 'zh', data: { title: '味噌湯', description: '傳統白味噌湯，配豆腐、裙帶菜及蔥' } }),
+    payload.update({ collection: 'menu-items', id: gyoza.id, locale: 'zh', data: { title: '煎餃子', description: '香脆豬肉蔬菜餃，配柚子醬油，每份6件' } }),
     // Drinks
-    payload.update({ collection: 'menu-items', id: sake.id, locale: 'zh', data: { title: '純米清酒', description: '純米清酒，可熱飲或冰飲，口感順滑甘甜' } as any }),
-    payload.update({ collection: 'menu-items', id: greenTea.id, locale: 'zh', data: { title: '日本綠茶', description: '熱或冰的儀式級抹茶或煎茶' } as any }),
-    payload.update({ collection: 'menu-items', id: japaneseBeer.id, locale: 'zh', data: { title: '札幌啤酒', description: '經典日本啤酒，330毫升玻璃瓶' } as any }),
+    payload.update({ collection: 'menu-items', id: sake.id, locale: 'zh', data: { title: '純米清酒', description: '純米清酒，可熱飲或冰飲，口感順滑甘甜' } }),
+    payload.update({ collection: 'menu-items', id: greenTea.id, locale: 'zh', data: { title: '日本綠茶', description: '熱或冰的儀式級抹茶或煎茶' } }),
+    payload.update({ collection: 'menu-items', id: japaneseBeer.id, locale: 'zh', data: { title: '札幌啤酒', description: '經典日本啤酒，330毫升玻璃瓶' } }),
   ])
 
   payload.logger.info('— Seeding pages...')
@@ -505,12 +505,11 @@ export const seedRestaurant = async ({
                   version: 1,
                 },
               },
-              link: { type: 'none' },
             },
           ],
         },
       ],
-    } as any,
+    },
     locale: 'en',
     context: { disableRevalidate: true },
   })
@@ -537,7 +536,7 @@ export const seedRestaurant = async ({
         links: [{ link: { type: 'custom', label: '查看菜單', url: '/zh/menu', appearance: 'default' } }],
         media: heroImgMedia.id,
       },
-    } as any,
+    },
     context: { disableRevalidate: true },
   })
 
@@ -567,7 +566,7 @@ export const seedRestaurant = async ({
           { link: { type: 'custom', label: 'Reservations', url: '/en/contact' } },
           { link: { type: 'custom', label: 'Admin', url: '/admin' } },
         ],
-      } as any,
+      },
     }),
   ])
 

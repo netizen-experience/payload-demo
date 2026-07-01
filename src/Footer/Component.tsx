@@ -1,9 +1,7 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
-import Link from 'next/link'
 import React from 'react'
 
 import { CMSLink } from '@/components/Link'
-import { Logo } from '@/components/Logo/Logo'
 
 export async function Footer() {
   const footerData = await getCachedGlobal('footer', 1)()
@@ -47,9 +45,9 @@ export async function Footer() {
               Contact
             </h4>
             <ul className="space-y-2 text-sm text-white/70">
-              <li>📍 {(footerData as any)?.address || 'G/F, 88 Stanley Street, Central'}</li>
-              <li>📞 {(footerData as any)?.phone || '+852 2345 6789'}</li>
-              <li>✉️ {(footerData as any)?.email || 'info@matsu-sushi.hk'}</li>
+              <li>📍 {footerData?.address || 'G/F, 88 Stanley Street, Central'}</li>
+              <li>📞 {footerData?.phone || '+852 2345 6789'}</li>
+              <li>✉️ {footerData?.email || 'info@matsu-sushi.hk'}</li>
             </ul>
           </div>
 
@@ -62,7 +60,7 @@ export async function Footer() {
               Hours
             </h4>
             <p className="text-sm text-white/70 mb-6">
-              {(footerData as any)?.hours || 'Mon–Sun: 12:00 – 22:30'}
+              {footerData?.hours || 'Mon–Sun: 12:00 – 22:30'}
             </p>
 
             <h4

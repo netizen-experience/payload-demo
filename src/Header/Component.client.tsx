@@ -1,7 +1,7 @@
 'use client'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
@@ -22,7 +22,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   // Detect current locale from pathname
   const currentLocale = pathname.startsWith('/zh') ? 'zh' : 'en'
-  const otherLocale = currentLocale === 'en' ? 'zh' : 'en'
   const otherLocaleLabel = currentLocale === 'en' ? '中文' : 'EN'
 
   // Build the alternate locale URL
@@ -40,7 +39,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   useEffect(() => {
     setHeaderTheme(null)
-  }, [pathname])
+  }, [pathname, setHeaderTheme])
 
   if (headerTheme !== prevHeaderTheme) {
     setPrevHeaderTheme(headerTheme)

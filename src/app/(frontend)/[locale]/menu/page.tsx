@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, type TypedLocale } from 'payload'
 import React from 'react'
 import Link from 'next/link'
 import { Media } from '@/components/Media'
+import type { Category } from '@/payload-types'
 
 const translations = {
   en: {
@@ -37,7 +38,7 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
   // Fetch all categories
   const categoriesResult = await payload.find({
     collection: 'categories',
-    locale: locale as any,
+    locale: locale as TypedLocale,
     limit: 100,
     sort: 'displayOrder',
     overrideAccess: false,
@@ -46,7 +47,7 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
   // Fetch all available menu items
   const menuItemsResult = await payload.find({
     collection: 'menu-items',
-    locale: locale as any,
+    locale: locale as TypedLocale,
     where: { available: { equals: true } },
     limit: 200,
     draft: false,
@@ -62,7 +63,7 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
   for (const item of allItems) {
     const catId =
       typeof item.category === 'object' && item.category !== null
-        ? (item.category as any).id
+        ? (item.category as Category).id
         : item.category
     if (!itemsByCategory[catId]) {
       itemsByCategory[catId] = []
@@ -94,7 +95,7 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
 
       <div className="container py-12">
         {/* Category sections */}
-        {categories.map((category: any) => {
+        {categories.map((category) => {
           const items = itemsByCategory[category.id] || []
           if (!items.length) return null
 
@@ -118,7 +119,7 @@ export default async function MenuPage({ params: paramsPromise }: Args) {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {items.map((item: any) => (
+                {items.map((item) => (
                   <Link
                     key={item.id}
                     href={`/${locale}/menu/${item.slug}`}
