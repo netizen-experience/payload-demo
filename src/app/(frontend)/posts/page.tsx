@@ -8,8 +8,10 @@ import { getPayload } from 'payload'
 import React from 'react'
 import PageClient from './page.client'
 
-export const dynamic = 'force-static'
-export const revalidate = 600
+// Dynamic, not static: this page fetches from Postgres at render time. Static generation
+// would require DB access during `next build`, which fails when the DB is VPC-private
+// (as on Aurora/Lambda) and unreachable from the machine running the build.
+export const dynamic = 'force-dynamic'
 
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })

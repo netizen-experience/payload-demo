@@ -19,33 +19,10 @@ const allergenLabels: Record<string, { en: string; zh: string }> = {
   nuts: { en: 'Nuts', zh: '堅果' },
 }
 
-export async function generateStaticParams() {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const items = await payload.find({
-      collection: 'menu-items',
-      limit: 1000,
-      draft: false,
-      overrideAccess: false,
-      select: { slug: true },
-    })
-
-    const locales = ['en', 'zh']
-    const params: { locale: string; slug: string }[] = []
-
-    for (const locale of locales) {
-      for (const doc of items.docs) {
-        if (doc.slug) {
-          params.push({ locale, slug: doc.slug })
-        }
-      }
-    }
-
-    return params
-  } catch {
-    return []
-  }
-}
+// Dynamic, not static: this page fetches from Postgres at render time. Static generation
+// would require DB access during `next build`, which fails when the DB is VPC-private
+// (as on Aurora/Lambda) and unreachable from the machine running the build.
+export const dynamic = 'force-dynamic'
 
 type Args = {
   params: Promise<{ locale: string; slug: string }>

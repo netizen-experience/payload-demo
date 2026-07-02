@@ -24,3 +24,8 @@ node_modules/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# SST / OpenNext
+.sst/
+.open-next/
+sst-env.d.ts
