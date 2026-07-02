@@ -68,6 +68,18 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 - **Next's `output: standalone` bundles the build machine's `.env` file into the deployment package.** Local `.env` has `AWS_PROFILE` set for SSO; that profile doesn't exist inside Lambda. `dotenv` only fills in vars *absent* from `process.env`, so any Lambda env var not explicitly set in `sst.config.ts` — like `AWS_PROFILE` — gets silently backfilled from the bundled file at runtime, potentially breaking the AWS SDK's credential resolution (it prefers `AWS_PROFILE` over the execution role's real credentials when both look present). Fixed by explicitly setting `AWS_PROFILE: ''` in the Nextjs component's `environment`.
 - **The one-off migration function needed several packages excluded from esbuild bundling** (`nodejs.install`) beyond the obvious ones: `sharp`, `tsx` (Payload dynamically `import()`s raw `.ts` migration files at runtime — needs a TS loader in the Lambda, hence `NODE_OPTIONS: '--import tsx/esm'` too), `@payloadcms/db-postgres`, and `payload` itself (a peer dependency `@payloadcms/drizzle` needs that isn't auto-installed by `nodejs.install`'s isolated resolution). The migration files directory also needs an explicit `copyFiles` entry — esbuild only follows static imports, not files Payload reads from disk at runtime.
 
+## Verifying a deployed environment: `npm run test:e2e:staging`
+
+A repeatable Playwright suite (`tests/e2e-staging/smoke.e2e.spec.ts`, config in `playwright.staging.config.ts`) replaces the manual curl-based checks used to validate Phase 3. It's a separate command from the regular `test:e2e` — that one always spins up a local dev server; this one only ever talks to a real deployed URL over the network, never starts anything locally.
+
+```bash
+STAGING_URL=https://xxxx.cloudfront.net npm run test:e2e:staging
+```
+
+Reachability tests (homepage, menu, admin login page) always run and need no credentials. The authenticated test (login → real browser-driven media upload → confirms `sharp` generated size variants → cleans up after itself) needs `STAGING_TEST_EMAIL`/`STAGING_TEST_PASSWORD` for an existing admin account — it's skipped if they're not set, since bootstrapping a user against a locked-down remote API isn't something a test should do automatically.
+
+To create that one-time test account on a fresh deployment (Users collection empty): `POST /api/users/first-register` with `{ email, password }` — this is Payload's own unauthenticated first-user bootstrap endpoint, the same one the admin panel's UI uses when no users exist yet. It won't work once any user already exists.
+
 ## Risks / effort notes
 
 - ~~Postgres migration needs validation of all collections plus `schedulePublish` behavior end-to-end.~~ Done in Phase 1.
@@ -79,6 +91,6 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 
 1. **DB** ✅ done: Swapped DB adapter to Postgres; runs against local/dockerized Postgres (`docker-compose.yml`); schema managed via explicit migrations in `src/migrations/`; seed and `schedulePublish` validated on Pages/Posts/MenuItems.
 2. **Media** ✅ done: Added `@payloadcms/storage-s3` (private bucket, served via Payload's own file-proxy route); migrated all 256 existing `public/media` files; new uploads and seed data now go straight to S3. Credentials come from the AWS SDK default provider chain (`AWS_PROFILE` locally, IAM role in prod later) — no static access keys.
-3. **Infra** ✅ done: Stood up VPC + VPC endpoints + Aurora Serverless v2 + private S3 bucket + secrets + OpenNext/SST Next.js deployment on `staging`. Verified end-to-end: homepage, menu, and admin login all load through CloudFront; a real image upload through the live admin API correctly triggered `sharp` resizing inside the deployed Lambda (all defined size variants generated and served back through the S3 proxy route) — the exact capability that killed the earlier abandoned attempt. See "what actually shipped" above for the 3 things that changed from the original plan, and "gotchas" for issues that took real debugging (not just infra-as-written) to resolve.
+3. **Infra** ✅ done: Stood up VPC + VPC endpoints + Aurora Serverless v2 + private S3 bucket + secrets + OpenNext/SST Next.js deployment on `staging`. Verified end-to-end: homepage, menu, and admin login all load through CloudFront; a real image upload through the live admin API correctly triggered `sharp` resizing inside the deployed Lambda (all defined size variants generated and served back through the S3 proxy route) — the exact capability that killed the earlier abandoned attempt. See "what actually shipped" above for the 3 things that changed from the original plan, and "gotchas" for issues that took real debugging (not just infra-as-written) to resolve. This verification is now a repeatable Playwright suite (`npm run test:e2e:staging`, see below) rather than one-off manual checks.
 4. **Cron**: Point EventBridge Scheduler at the jobs endpoint; retire the old cron trigger.
 5. **Cutover**: Switch DNS, monitor, decommission the old VM/Docker host.

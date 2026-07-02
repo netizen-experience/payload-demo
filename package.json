@@ -21,6 +21,8 @@
     "test": "npm run test:int && npm run test:e2e",
     "pretest:e2e": "playwright install chromium",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
+    "pretest:e2e:staging": "playwright install chromium",
+    "test:e2e:staging": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.staging.config.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
