@@ -17,7 +17,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       try {
         revalidatePath(path)
-        revalidateTag('pages-sitemap', 'max')
+        revalidateTag('pages-sitemap')
       } catch (_err) {
         // revalidatePath/revalidateTag only works within Next.js server context
       }
@@ -31,7 +31,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       try {
         revalidatePath(oldPath)
-        revalidateTag('pages-sitemap', 'max')
+        revalidateTag('pages-sitemap')
       } catch (_err) {
         // revalidatePath/revalidateTag only works within Next.js server context
       }
@@ -45,7 +45,7 @@ export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({ doc, req: { 
     const path = doc?.slug === 'home' ? '/' : `/${doc?.slug}`
     try {
       revalidatePath(path)
-      revalidateTag('pages-sitemap', 'max')
+      revalidateTag('pages-sitemap')
     } catch (_err) {
       // revalidatePath/revalidateTag only works within Next.js server context
     }

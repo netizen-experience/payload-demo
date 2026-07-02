@@ -7,6 +7,12 @@
 
 While starting Phase 2, we found real AWS infrastructure (an Aurora Postgres cluster, a VPC, and an S3 bucket, all tagged `sst:app=payload-demo`/`sst:stage=prod`) left running from an **earlier, separate attempt** at this migration using SST + OpenNext, which hit a real blocker (Turbopack hashes native modules like `sharp` with random suffixes, breaking Lambda cold-start module resolution) and was abandoned — that code was `git reset` out of history and isn't reachable from any branch. The AWS resources it created were never torn down and the Aurora cluster was actively billing. We tore all of it down by hand (SST's own state had no record of these resources, so `sst remove` couldn't do it) before proceeding with a fresh, independent S3 bucket for Phase 2. If you're planning Phase 3's IaC from scratch, there's no leftover infra to reconcile with — start clean.
 
+## Phase 3 prep: Next.js 16 → 15.4.11 downgrade
+
+Before restarting Phase 3, we downgraded Next.js from 16.2.3 to 15.4.11 to directly address the blocker that killed the earlier abandoned attempt (see History note above): Next 16 makes Turbopack mandatory for `next build`, and Turbopack hashes native modules like `sharp` with random suffixes, breaking Lambda cold-start module resolution under OpenNext. On 15.4.11, `next build` defaults back to webpack, avoiding the issue entirely — verified by confirming the build banner shows no `(Turbopack)` tag.
+
+This was **not** blocked by Payload's peer dependency, despite an initial (incorrect) web search suggesting otherwise — Payload 3.82.1 explicitly allows `>=15.4.11 <15.5.0`, and 15.4.11 is the latest release in that window. Two real breaking changes surfaced only during implementation (not caught by pre-downgrade research): `revalidateTag`'s two-argument form is Next-16-only, and `eslint-config-next`'s flat-config export shape changed between 15 and 16. Both are documented in detail, along with every other version constraint checked, in [docs/nextjs-version-compatibility.md](nextjs-version-compatibility.md) — check that file before any future Next.js/Payload/React version change.
+
 ## Why migrate
 
 - Currently self-managed Docker/VM hosting, paying for always-on compute against low/spiky traffic.
@@ -49,7 +55,7 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 - ~~Postgres migration needs validation of all collections plus `schedulePublish` behavior end-to-end.~~ Done in Phase 1.
 - ~~Media migration requires a one-off script to push `public/media` to S3 and repoint URLs.~~ Done in Phase 2 (`aws s3 sync`, flat key structure matched the existing local layout exactly, no repointing needed).
 - Lambda cold starts on the admin panel are the main UX risk — acceptable since it's editor-only traffic, not customer-facing.
-- Sharp's native binary needs the arm64 build target for Lambda (already a dependency, just needs correct build config).
+- ~~Turbopack hashes sharp's native binary with random suffixes, breaking Lambda cold-start module resolution.~~ Mitigated ahead of Phase 3 by downgrading to Next 15.4.11, where `next build` defaults to webpack — see "Phase 3 prep" above. Sharp still needs the arm64 build target for Lambda once we get to actual OpenNext packaging (already a dependency, just needs correct build config).
 
 ## Phased plan
 
