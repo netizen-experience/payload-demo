@@ -200,7 +200,6 @@ export const MenuItems: CollectionConfig = {
   versions: {
     drafts: {
       autosave: { interval: 100 },
-      schedulePublish: true,
     },
     maxPerDoc: 50,
   },

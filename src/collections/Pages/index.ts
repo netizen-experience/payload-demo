@@ -124,7 +124,6 @@ export const Pages: CollectionConfig<'pages'> = {
       autosave: {
         interval: 100,
       },
-      schedulePublish: true,
     },
     maxPerDoc: 50,
   },

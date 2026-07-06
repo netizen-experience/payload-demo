@@ -77,12 +77,11 @@ Localized fields: `title`, `description`. Non-localized: `price`, `image`, `cate
 - **Collections**: Pages, Posts, Media, Categories, Users
 - **Globals**: Header, Footer
 - **Plugins**: Redirects, Nested Docs, SEO, Form Builder, Search, S3 Storage (Media collection — see `S3_BUCKET`/`S3_REGION` below)
-- **Jobs Queue**: Scheduled publishing (requires `CRON_SECRET`)
 - **TypeScript output**: `src/payload-types.ts` (auto-generated — do not edit manually)
 
 ### Content Architecture
 
-Pages and Posts use a **layout builder** pattern: content is stored as an array of blocks (Hero, Content, Media, CallToAction, Archive) rather than a single rich text field. Both support drafts/versioning with scheduled publishing.
+Pages and Posts use a **layout builder** pattern: content is stored as an array of blocks (Hero, Content, Media, CallToAction, Archive) rather than a single rich text field. Both support drafts/versioning.
 
 ### Path Aliases
 
@@ -116,6 +115,5 @@ See `.env.example`:
 - `DATABASE_URL` — Postgres connection string (see `docker-compose.yml` for the local Postgres service)
 - `PAYLOAD_SECRET` — JWT encryption key
 - `NEXT_PUBLIC_SERVER_URL` — e.g. `http://localhost:3000`
-- `CRON_SECRET` — for scheduled publishing
 - `PREVIEW_SECRET` — for draft preview URLs
 - `S3_BUCKET` / `S3_REGION` — media storage (private bucket, served via Payload's `/api/media/file` proxy). Credentials come from the AWS SDK default provider chain, not static keys — locally via `AWS_PROFILE`, in production via an IAM role.

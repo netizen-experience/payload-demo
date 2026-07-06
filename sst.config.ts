@@ -76,7 +76,6 @@ export default $config({
 
     // --- App secrets (needed now: PayloadSecret is required for getPayload() to init at all) ---
     const payloadSecret = new sst.Secret('PayloadSecret')
-    const cronSecret = new sst.Secret('CronSecret')
     const previewSecret = new sst.Secret('PreviewSecret')
 
     // --- Media bucket: private, served through Payload's own /api/media/file proxy
@@ -114,11 +113,10 @@ export default $config({
         // Kept under CloudFront's default 60s response timeout.
         timeout: '55 seconds',
       },
-      link: [mediaBucket, payloadSecret, cronSecret, previewSecret],
+      link: [mediaBucket, payloadSecret, previewSecret],
       environment: {
         DATABASE_URL: databaseUrl,
         PAYLOAD_SECRET: payloadSecret.value,
-        CRON_SECRET: cronSecret.value,
         PREVIEW_SECRET: previewSecret.value,
         S3_BUCKET: mediaBucket.name,
         S3_REGION: 'ap-southeast-1',
@@ -133,7 +131,6 @@ export default $config({
     return {
       databaseHost: database.host,
       migrateFunctionName: migrateFn.name,
-      cronSecretName: cronSecret.name,
       previewSecretName: previewSecret.name,
       mediaBucketName: mediaBucket.name,
       url: web.url,

@@ -1,6 +1,6 @@
 # Serverless Migration Notes (AWS + IaC)
 
-**Status**: Phases 1-3 complete (DB adapter swap, media → S3, staging infra live on Lambda/CloudFront). Phases 4-5 not started.
+**Status**: Phases 1-3 complete (DB adapter swap, media → S3, staging infra live on Lambda/CloudFront). Phase 4 (Cron) dropped — scheduled publishing was removed from the app entirely (see note below) rather than ported to EventBridge. Phase 5 not started.
 **Recommendation**: Migrate. Low/spiky traffic + cost-driven motivation is a good fit for serverless, and this app is already close to serverless-ready.
 
 ## History note
@@ -35,16 +35,18 @@ A few decisions changed from the original plan, all for reasons discovered durin
 
 - **Database**: Postgres via `@payloadcms/db-postgres` (as of Phase 1), local dev via Docker (`docker-compose.yml`), schema managed via explicit migrations in `src/migrations/` (`push: false`) — [src/payload.config.ts](../src/payload.config.ts)
 - **Media storage**: S3 via `@payloadcms/storage-s3` (as of Phase 2), private bucket — files are served through Payload's own `/api/media/file` route, which proxies to S3 server-side, so no bucket policy or CDN is required yet — [src/plugins/index.ts](../src/plugins/index.ts)
-- **Scheduled publishing**: Payload jobs queue, gated by a `CRON_SECRET` bearer token, triggered externally — [src/payload.config.ts](../src/payload.config.ts)
 - **Hosting**: Docker / docker-compose, Next.js `standalone` output, port 3000
 
-## The three blockers
+## Scheduled publishing: removed, not ported
+
+The template shipped with `schedulePublish: true` on Pages/Posts/MenuItems, backed by Payload's jobs queue and a `CRON_SECRET`-gated run endpoint. That feature needed something to poll the run endpoint on a schedule — no always-on process exists in Lambda, so the original plan (Phase 4) was to point an EventBridge Scheduler rule at it. Since nobody was actually using "schedule for later" in the admin panel, we removed the feature outright instead of standing up EventBridge for it: `schedulePublish` off on all three collections, the `jobs`/`CRON_SECRET` config dropped from `payload.config.ts`, and the `payload_jobs`/`payload_jobs_log` tables dropped via migration `20260706_084436_remove_jobs_queue`. If scheduled publishing is needed later, re-enable `schedulePublish` on the relevant collections and revisit EventBridge then — see the old Phase 4 plan item below for the shape of that work.
+
+## The two blockers
 
 | Current | Problem on serverless | Fix |
 |---|---|---|
 | ~~SQLite file~~ (resolved in Phase 1 — now Postgres) | No persistent local disk between invocations | Point `@payloadcms/db-postgres` at a managed Postgres (Aurora Serverless v2 as of Phase 3 — see Target architecture) |
 | ~~Local filesystem media~~ (resolved in Phase 2 — now S3) | Filesystem is ephemeral per-invocation | `@payloadcms/storage-s3`, private bucket + Payload's own file-proxy route; CloudFront can front it later without any app changes |
-| External process hits jobs endpoint with `CRON_SECRET` | No always-on process to poll | EventBridge Scheduler → same jobs endpoint, same token |
 
 Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the Next.js request lifecycle and deploys to Lambda unmodified via **OpenNext**.
 
@@ -54,8 +56,7 @@ Everything else (routing, RSC, admin panel, REST/GraphQL APIs) runs inside the N
 - **Database**: Aurora Postgres Serverless v2 (`sst.aws.Aurora`), auto-pauses when idle — see the "what changed" note above for why this replaced the originally-planned plain RDS instance.
 - **Networking**: single VPC, no NAT Gateway/instance. Lambda reaches AWS services entirely through VPC endpoints — S3 and DynamoDB via free Gateway endpoints, Secrets Manager and SQS via Interface endpoints (small per-AZ + data cost, still far cheaper than NAT). DynamoDB and SQS are needed because OpenNext's ISR/revalidation system uses both internally, even though the app itself doesn't reference either directly — easy to miss if you only think about the app's own AWS dependencies.
 - **Media**: S3 + `@payloadcms/storage-s3` adapter. Kept the bucket private and served files through Payload's existing `/api/media/file` proxy route (no app or `next.config.ts` changes needed); CloudFront can be added in front of the same bucket later purely as an infra change.
-- **Scheduled publishing**: EventBridge Scheduler rule → existing jobs endpoint, reusing `CRON_SECRET`. (Phase 4, not yet done.)
-- **Secrets**: 3 `sst.Secret`s (`PayloadSecret`, `CronSecret`, `PreviewSecret`), set via `sst secret set --stage staging`. Aurora's own DB credentials are generated and stored internally by the `sst.aws.Aurora` component.
+- **Secrets**: 2 `sst.Secret`s (`PayloadSecret`, `PreviewSecret`), set via `sst secret set --stage staging`. Aurora's own DB credentials are generated and stored internally by the `sst.aws.Aurora` component.
 - **Migrations**: no NAT means no network path from a local machine to the private-subnet-only Aurora instance. Solved with a small VPC-attached `sst.aws.Function` (`infra/migrate-handler.ts`) that runs `payload.db.migrate()` (and optionally the seed script), invoked manually via `aws lambda invoke` after any deploy that changes the schema.
 
 ## IaC choice
@@ -82,15 +83,15 @@ To create that one-time test account on a fresh deployment (Users collection emp
 
 ## Risks / effort notes
 
-- ~~Postgres migration needs validation of all collections plus `schedulePublish` behavior end-to-end.~~ Done in Phase 1.
+- ~~Postgres migration needs validation of all collections end-to-end.~~ Done in Phase 1.
 - ~~Media migration requires a one-off script to push `public/media` to S3 and repoint URLs.~~ Done in Phase 2 (`aws s3 sync`, flat key structure matched the existing local layout exactly, no repointing needed).
 - Lambda cold starts on the admin panel are the main UX risk — acceptable since it's editor-only traffic, not customer-facing.
 - ~~Turbopack hashes sharp's native binary with random suffixes, breaking Lambda cold-start module resolution.~~ Mitigated ahead of Phase 3 by downgrading to Next 15.4.11, where `next build` defaults to webpack — see "Phase 3 prep" above. ~~Sharp needs the correct native-binary architecture for Lambda~~ — done via `open-next.config.ts`'s `install.arch`, matching the deployed function's actual architecture (`x86_64`, not arm64 — verified via `aws lambda get-function-configuration` rather than assumed).
 
 ## Phased plan
 
-1. **DB** ✅ done: Swapped DB adapter to Postgres; runs against local/dockerized Postgres (`docker-compose.yml`); schema managed via explicit migrations in `src/migrations/`; seed and `schedulePublish` validated on Pages/Posts/MenuItems.
+1. **DB** ✅ done: Swapped DB adapter to Postgres; runs against local/dockerized Postgres (`docker-compose.yml`); schema managed via explicit migrations in `src/migrations/`; seed validated on Pages/Posts/MenuItems.
 2. **Media** ✅ done: Added `@payloadcms/storage-s3` (private bucket, served via Payload's own file-proxy route); migrated all 256 existing `public/media` files; new uploads and seed data now go straight to S3. Credentials come from the AWS SDK default provider chain (`AWS_PROFILE` locally, IAM role in prod later) — no static access keys.
 3. **Infra** ✅ done: Stood up VPC + VPC endpoints + Aurora Serverless v2 + private S3 bucket + secrets + OpenNext/SST Next.js deployment on `staging`. Verified end-to-end: homepage, menu, and admin login all load through CloudFront; a real image upload through the live admin API correctly triggered `sharp` resizing inside the deployed Lambda (all defined size variants generated and served back through the S3 proxy route) — the exact capability that killed the earlier abandoned attempt. See "what actually shipped" above for the 3 things that changed from the original plan, and "gotchas" for issues that took real debugging (not just infra-as-written) to resolve. This verification is now a repeatable Playwright suite (`npm run test:e2e:staging`, see below) rather than one-off manual checks.
-4. **Cron**: Point EventBridge Scheduler at the jobs endpoint; retire the old cron trigger.
+4. ~~**Cron**: Point EventBridge Scheduler at the jobs endpoint; retire the old cron trigger.~~ Dropped — scheduled publishing was removed from the app instead (see "Scheduled publishing: removed, not ported" above). Nothing to schedule.
 5. **Cutover**: Switch DNS, monitor, decommission the old VM/Docker host.
