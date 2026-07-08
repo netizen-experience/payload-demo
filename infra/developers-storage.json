@@ -1,0 +1,90 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "S3StagingAndMediaBuckets",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::payload-demo-staging-mediabucketbucket-*",
+        "arn:aws:s3:::payload-demo-staging-mywebassetsbucket-*",
+        "arn:aws:s3:::payload-demo-media-263078047633",
+        "arn:aws:s3:::payload-demo-media-263078047633/*"
+      ]
+    },
+    {
+      "Sid": "SstSharedStateBootstrapScopedToThisApp",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": [
+        "arn:aws:s3:::sst-state-*/app/payload-demo/staging*",
+        "arn:aws:s3:::sst-state-*/eventlog/payload-demo/staging/*",
+        "arn:aws:s3:::sst-state-*/snapshot/payload-demo/staging/*",
+        "arn:aws:s3:::sst-state-*/update/payload-demo/staging/*",
+        "arn:aws:s3:::sst-state-*/lock/payload-demo/staging*",
+        "arn:aws:s3:::sst-state-*/secret/payload-demo/staging*",
+        "arn:aws:s3:::sst-state-*/secret/payload-demo/_fallback*"
+      ]
+    },
+    {
+      "Sid": "SstSharedStateListWithPrefix",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::sst-state-*",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "app/payload-demo/staging*",
+            "eventlog/payload-demo/staging/*",
+            "snapshot/payload-demo/staging/*",
+            "update/payload-demo/staging/*",
+            "lock/payload-demo/staging*",
+            "secret/payload-demo/staging*",
+            "secret/payload-demo/_fallback*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "SstSharedAssetBucketNotIsolable",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:GetObjectTagging",
+        "s3:PutObjectTagging",
+        "s3:DeleteObjectTagging"
+      ],
+      "Resource": "arn:aws:s3:::sst-asset-*"
+    },
+    {
+      "Sid": "SsmBootstrapAndPassphrase",
+      "Effect": "Allow",
+      "Action": ["ssm:GetParameter"],
+      "Resource": [
+        "arn:aws:ssm:ap-southeast-1:263078047633:parameter/sst/bootstrap",
+        "arn:aws:ssm:ap-southeast-1:263078047633:parameter/sst/passphrase/payload-demo/staging"
+      ]
+    },
+    {
+      "Sid": "SecretsManagerTagged",
+      "Effect": "Allow",
+      "Action": "secretsmanager:*",
+      "Resource": "arn:aws:secretsmanager:ap-southeast-1:263078047633:secret:payload-demo-staging-*"
+    },
+    {
+      "Sid": "DynamoDbForRevalidation",
+      "Effect": "Allow",
+      "Action": "dynamodb:*",
+      "Resource": "arn:aws:dynamodb:ap-southeast-1:263078047633:table/payload-demo-staging-*"
+    },
+    {
+      "Sid": "SqsForRevalidation",
+      "Effect": "Allow",
+      "Action": "sqs:*",
+      "Resource": "arn:aws:sqs:ap-southeast-1:263078047633:payload-demo-staging-*"
+    }
+  ]
+}
