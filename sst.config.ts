@@ -86,9 +86,13 @@ export default $config({
     const migrateFn = new sst.aws.Function('MigrateFunction', {
       handler: 'infra/migrate-handler.handler',
       vpc,
-      timeout: '60 seconds',
+      timeout: '120 seconds',
+      // Pinned: Node 24's require(esm) interop chokes on Payload's dynamically-loaded
+      // .ts migration files requiring @payloadcms/db-postgres's ESM build. Node 20 (this
+      // project's documented minimum, per package.json engines) doesn't hit this.
+      runtime: 'nodejs24.x',
       link: [mediaBucket],
-      nodejs: { install: ['sharp', 'tsx', '@payloadcms/db-postgres', 'payload'] },
+      nodejs: { install: ['sharp', 'tsx', '@payloadcms/db-postgres', 'payload', 'pg'] },
       // payload.db.migrate() reads migration files from disk at runtime — esbuild only
       // follows static JS/TS imports, so the migrations directory needs an explicit copy.
       copyFiles: [{ from: 'src/migrations', to: 'migrations' }],
