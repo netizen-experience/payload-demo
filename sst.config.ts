@@ -124,11 +124,38 @@ export default $config({
         PREVIEW_SECRET: previewSecret.value,
         S3_BUCKET: mediaBucket.name,
         S3_REGION: 'ap-southeast-1',
+        // Hardcoded, not derived from `web.url` — that would be self-referential (this is
+        // an input to the same resource whose output it'd be reading). SST forwards
+        // `environment` to the local `next build` step too, not just the deployed Lambda,
+        // so this also bakes the domain into next.config.ts's `remotePatterns` at build
+        // time (needed for getMediaUrl's absolute URLs to pass Next's own host allowlist).
+        // Known limitation: goes stale if this CloudFront distribution is ever torn down
+        // and recreated from scratch (new deploy gets a new random domain) — update this
+        // value (and redeploy) if that happens. A custom domain would remove the need for
+        // this entirely.
+        NEXT_PUBLIC_SERVER_URL: 'https://dtgicslfgxmeh.cloudfront.net',
         // Next's `output: standalone` bundles the build machine's .env file into the
         // deployment package. Locally that file sets AWS_PROFILE for SSO credentials, which
         // doesn't exist inside Lambda — dotenv fills in any var absent from process.env, so
         // without this override it clobbers the execution role's real credentials at runtime.
         AWS_PROFILE: '',
+      },
+      transform: {
+        // SST's own auto-generated role for this function only grants s3:GetObject on
+        // its assets bucket, but the bundled OpenNext image-optimizer handler also does
+        // an s3:ListBucket call (confirmed via CloudWatch logs — AccessDenied on
+        // ListBucket, not GetObject) that this permission set doesn't cover. Bucket name
+        // is internal to this component (not something we hold a reference to), and
+        // ListBucket alone only exposes object keys, not data — Resource: '*' scoped to
+        // just this one action, on just this one function's role, is an acceptable trade
+        // for not having to plumb the bucket ARN through.
+        imageOptimizer: (args) => {
+          // Typed as Input<...[]> for the general case, but SST builds this one as a plain
+          // array literal before this transform runs (checked .sst/platform's ssr-site.ts) —
+          // safe to treat as one here.
+          const existing = (args.permissions ?? []) as unknown as { actions: string[]; resources: string[] }[]
+          args.permissions = [...existing, { actions: ['s3:ListBucket'], resources: ['*'] }]
+        },
       },
     })
 
