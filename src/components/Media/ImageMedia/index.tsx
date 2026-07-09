@@ -62,6 +62,10 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   let height: number | undefined
   let alt = altFromProps
   let src: StaticImageData | string = srcFromProps || ''
+  // SVGs don't benefit from raster resizing, and Next's image optimizer refuses to
+  // process them by default (dangerouslyAllowSVG) — skip optimization for these rather
+  // than opt in to that flag app-wide.
+  let isSvg = false
 
   if (!src && resource && typeof resource === 'object') {
     const { alt: altFromResource, height: fullHeight, url, width: fullWidth } = resource
@@ -69,6 +73,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     width = fullWidth!
     height = fullHeight!
     alt = altFromResource || ''
+    isSvg = Boolean(url?.endsWith('.svg'))
 
     const cacheTag = resource.updatedAt
 
@@ -98,6 +103,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
         loading={loading}
         sizes={sizes}
         src={src}
+        unoptimized={isSvg}
         width={!fill ? width : undefined}
       />
     </picture>
