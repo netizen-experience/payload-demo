@@ -110,6 +110,14 @@ export default $config({
     // --- The app itself: Lambda via OpenNext + CloudFront ---
     const web = new sst.aws.Nextjs('MyWeb', {
       vpc,
+      // payload-demo.netizenexperience.com has its own dedicated hosted zone
+      // (Z06693953EJ4NP2ZAD3IE) — passing it explicitly avoids relying on sst.aws.dns()'s
+      // suffix-match lookup picking the wrong zone among the other *.netizenexperience.com
+      // zones in this account.
+      domain: {
+        name: 'payload-demo.netizenexperience.com',
+        dns: sst.aws.dns({ zone: 'Z06693953EJ4NP2ZAD3IE' }),
+      },
       server: {
         install: ['sharp'],
         // SST's 20s default is too tight for Aurora Serverless v2 resuming from a full
@@ -124,16 +132,14 @@ export default $config({
         PREVIEW_SECRET: previewSecret.value,
         S3_BUCKET: mediaBucket.name,
         S3_REGION: 'ap-southeast-1',
-        // Hardcoded, not derived from `web.url` — that would be self-referential (this is
-        // an input to the same resource whose output it'd be reading). SST forwards
-        // `environment` to the local `next build` step too, not just the deployed Lambda,
-        // so this also bakes the domain into next.config.ts's `remotePatterns` at build
-        // time (needed for getMediaUrl's absolute URLs to pass Next's own host allowlist).
-        // Known limitation: goes stale if this CloudFront distribution is ever torn down
-        // and recreated from scratch (new deploy gets a new random domain) — update this
-        // value (and redeploy) if that happens. A custom domain would remove the need for
-        // this entirely.
-        NEXT_PUBLIC_SERVER_URL: 'https://dtgicslfgxmeh.cloudfront.net',
+        // Hardcoded, not derived from `domain`/`web.url` — that would be self-referential
+        // (this is an input to the same resource whose output it'd be reading). Stable now
+        // that it's a real custom domain rather than CloudFront's auto-generated one — no
+        // longer goes stale on a from-scratch redeploy. SST forwards `environment` to the
+        // local `next build` step too, not just the deployed Lambda, so this also bakes the
+        // domain into next.config.ts's `remotePatterns` at build time (needed for
+        // getMediaUrl's absolute URLs to pass Next's own host allowlist).
+        NEXT_PUBLIC_SERVER_URL: 'https://payload-demo.netizenexperience.com',
         // Next's `output: standalone` bundles the build machine's .env file into the
         // deployment package. Locally that file sets AWS_PROFILE for SSO credentials, which
         // doesn't exist inside Lambda — dotenv fills in any var absent from process.env, so

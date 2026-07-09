@@ -11,11 +11,19 @@
         "lambda:List*",
         "cloudfront:Get*",
         "cloudfront:List*",
+        "cloudfront:DescribeKeyValueStore",
         "logs:Describe*",
+        "logs:ListTagsForResource",
         "iam:GetRole",
         "iam:GetRolePolicy",
         "iam:ListRole*",
         "iam:ListAttachedRolePolicies",
+        "route53:Get*",
+        "route53:List*",
+        "acm:Describe*",
+        "acm:List*",
+        "servicediscovery:Get*",
+        "servicediscovery:List*",
         "sts:GetCallerIdentity"
       ],
       "Resource": "*"
@@ -169,6 +177,7 @@
         "cloudfront:CreateFunction",
         "cloudfront:UpdateFunction",
         "cloudfront:DeleteFunction",
+        "cloudfront:DescribeFunction",
         "cloudfront:PublishFunction",
         "cloudfront:TagResource"
       ],
@@ -190,6 +199,18 @@
       "Effect": "Allow",
       "Action": "logs:*",
       "Resource": "arn:aws:logs:ap-southeast-1:263078047633:log-group:/aws/lambda/payload-demo-staging-*"
+    },
+    {
+      "Sid": "Route53RecordsForPayloadDemoZone",
+      "Effect": "Allow",
+      "Action": ["route53:ChangeResourceRecordSets", "route53:ChangeTagsForResource"],
+      "Resource": "arn:aws:route53:::hostedzone/Z06693953EJ4NP2ZAD3IE"
+    },
+    {
+      "Sid": "AcmCertificateLifecycle",
+      "Effect": "Allow",
+      "Action": ["acm:RequestCertificate", "acm:DeleteCertificate", "acm:AddTagsToCertificate"],
+      "Resource": "*"
     }
   ]
 }
