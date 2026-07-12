@@ -35,7 +35,14 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    adminThumbnail: 'thumbnail',
+    // Payload's auto-computed `thumbnailURL` field always points at the internal
+    // /api/media/file proxy, which 500s once disablePayloadAccessControl is set on the
+    // storage adapter (a known core inconsistency, not specific to Vercel Blob). Read the
+    // already-correct Blob URL directly instead.
+    adminThumbnail: ({ doc }) =>
+      (doc.sizes as Record<string, { url?: string }> | undefined)?.thumbnail?.url ||
+      (doc.url as string | undefined) ||
+      false,
     focalPoint: true,
     imageSizes: [
       {
