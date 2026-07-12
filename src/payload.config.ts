@@ -19,6 +19,15 @@ import { getServerSideURL } from './utilities/getURL'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// getServerSideURL() alone only ever resolves to one hostname (the production domain on
+// Vercel), which rejects a preview deployment's own browser origin. VERCEL_URL (this exact
+// deployment) and VERCEL_BRANCH_URL (stable per-branch preview alias) cover both cases.
+const corsOrigins = [
+  getServerSideURL(),
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+  process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : null,
+].filter((origin): origin is string => Boolean(origin))
+
 export default buildConfig({
   admin: {
     components: {
@@ -58,7 +67,7 @@ export default buildConfig({
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
   collections: [Pages, Posts, Media, Categories, MenuItems, Users],
-  cors: [getServerSideURL()].filter(Boolean),
+  cors: corsOrigins,
   globals: [Header, Footer],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
