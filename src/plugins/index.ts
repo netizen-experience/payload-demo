@@ -2,7 +2,7 @@ import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
-import { s3Storage } from '@payloadcms/storage-s3'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -87,13 +87,12 @@ export const plugins: Plugin[] = [
       },
     },
   }),
-  s3Storage({
+  vercelBlobStorage({
     collections: {
-      media: true,
+      media: {
+        disablePayloadAccessControl: true,
+      },
     },
-    bucket: process.env.S3_BUCKET || '',
-    config: {
-      region: process.env.S3_REGION,
-    },
+    token: process.env.BLOB_READ_WRITE_TOKEN,
   }),
 ]
