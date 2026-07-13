@@ -93,11 +93,6 @@ export const plugins: Plugin[] = [
         disablePayloadAccessControl: true,
       },
     },
-    // Payload's filename-collision check only queries its own DB, but Blob storage is a
-    // single global namespace shared across every Neon branch (Preview/Production included)
-    // — a filename can look "free" to one branch's DB while already existing in Blob from
-    // another branch's upload. addRandomSuffix guarantees a unique key regardless.
-    addRandomSuffix: true,
     token: process.env.BLOB_READ_WRITE_TOKEN,
   }),
 ]
